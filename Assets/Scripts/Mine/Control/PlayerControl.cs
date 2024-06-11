@@ -20,7 +20,7 @@ namespace Mine.Control
         RotateA,
         RotateB
     }
-    public class PlayerControl:Singleton<PlayerControl>
+    public class PlayerControl:MonoSingleton<PlayerControl>
     {
         public Transform transformDropPanel;        //下落区域的父物体
         public Transform transformPrefab;           //预制体的父物体

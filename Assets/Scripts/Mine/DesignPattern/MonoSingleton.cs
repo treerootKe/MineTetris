@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Mine.DesignPattern
 {
-    public class Singleton<T>:MonoBehaviour where T:MonoBehaviour
+    public class MonoSingleton<T>:MonoBehaviour where T:MonoBehaviour
     {
         protected static T instance;
 
@@ -11,7 +11,6 @@ namespace Mine.DesignPattern
         protected virtual void Awake()
         {
             instance = transform.GetComponent<T>();
-            Debug.Log(instance.name);
         }
     }
 }

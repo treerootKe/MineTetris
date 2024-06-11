@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Mine.Control
 {
-    public class ButtonControl:Singleton<ButtonControl>
+    public class ButtonControl:MonoSingleton<ButtonControl>
     {
         public Transform transformTopPanel;
         public Transform transformBottomPanel;

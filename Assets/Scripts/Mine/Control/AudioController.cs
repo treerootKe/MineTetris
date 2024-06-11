@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Mine.Control
 {
-    public class AudioController : Singleton<AudioController>
+    public class AudioController : MonoSingleton<AudioController>
     {
         private Dictionary<string, AudioClip> _dicAudioClips;
         public AudioClip audioClipMoveX;
