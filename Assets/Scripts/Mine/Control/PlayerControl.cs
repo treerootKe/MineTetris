@@ -128,7 +128,8 @@ namespace Mine.Control
             }
         }
         
-        public void StartTetris()
+        //生成一个新的形状前，初始化一下数据
+        public void OnceDropInit()
         {
             isFastDrop = true;
             gameObjectsNextShape[_mNextShape].SetActive(false);
@@ -137,6 +138,11 @@ namespace Mine.Control
             _mNextShape = UnityEngine.Random.Range(0, 7);
             gameObjectsNextShape[_mNextShape].SetActive(true);
             _mIEBlockDrop = BlockDrop(globalItemShape);
+            StartTetris();
+        }
+
+        public void StartTetris()
+        {
             if (!globalItemShape.JudgeIsPossibleDrop(panelAllBlock))
             {
                 Debug.Log("game over");
@@ -180,7 +186,7 @@ namespace Mine.Control
                 yield return null;
             }
             globalItemShape = null;
-            StartTetris();
+            OnceDropInit();
         }
 
         IEnumerator BlockDisappear()
@@ -241,6 +247,7 @@ namespace Mine.Control
             }, _mScore, _mScore + nOnceScore, 1).OnComplete(() => _mScore += nOnceScore);
         }
 
+        #region 事件
         private void EventShapeMoveX(ShapeChange moveDirection)
         {
             if (globalItemShape.JudgeIsPossibleMoveX(panelAllBlock, moveDirection))
@@ -293,6 +300,6 @@ namespace Mine.Control
                 AudioController.Instance.PlaySound("Rotate");
             }
         }
-        
+        #endregion
     }
 }
