@@ -67,7 +67,7 @@ namespace Mine.Control
                 new Vector2[4] { new Vector2(45, 45), new Vector2(90, 45), new Vector2(0, 90), new Vector2(45, 90) },
                 new Vector2[4] { new Vector2(45, 0), new Vector2(45, 45), new Vector2(90, 45), new Vector2(90, 90) },
                 new Vector2[4] { new Vector2(45, 0), new Vector2(90, 0), new Vector2(0, 45), new Vector2(45, 45) },
-                new Vector2[4] { new Vector2(45, 0), new Vector2(0, 45), new Vector2(45, 45), new Vector2(0, 90) }
+                new Vector2[4] { new Vector2(0, 0), new Vector2(0, 45), new Vector2(45, 45), new Vector2(45, 90) }
             };
             blockRotateInsidePos.Add(fiveShapeArea);
             //O
