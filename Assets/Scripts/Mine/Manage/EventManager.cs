@@ -5,8 +5,8 @@ namespace Mine.Manage
 {
     public class EventManager
     {
-        public static Action<ShapeChange> eventShapeMoveX;
-        public static Action<ShapeChange> eventShapeRotate;
-        public static Action eventDropFastest;
+        public static Action<ShapeChange> eventShapeMoveX;          //形状水平移动
+        public static Action<ShapeChange> eventShapeRotate;         //形状旋转
+        public static Action eventDropFastest;                      //形状快速下落
     }
 }

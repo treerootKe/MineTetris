@@ -21,16 +21,16 @@ public class AssetBundleManager : MonoBehaviour
   
     IEnumerator LoadAssetBundle()  
     {  
-        string assetBundlePath = Path.Combine(Application.streamingAssetsPath, "tetris"); 
-#if UNITY_ANDROID  
+        string assetBundlePath = Path.Combine(Application.streamingAssetsPath, "tetris");
+#if UNITY_ANDROID
         // 对于安卓平台，UnityWebRequest从jar包中加载  
         // string uri = "jar:file://" + Application.dataPath + "!/assets/" + assetBundlePath;  
         UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(assetBundlePath);  
-#else  
-//          // 对于其他平台PC、IOS.....直接从磁盘加载  
-//          UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(assetBundlePath);  
-        
-#endif 
+#else
+        // 对于其他平台PC、IOS.....直接从磁盘加载  
+        UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(assetBundlePath);
+
+#endif
         yield return www.SendWebRequest();  
   
         if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)  

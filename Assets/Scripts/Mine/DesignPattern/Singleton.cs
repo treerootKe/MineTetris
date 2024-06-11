@@ -1,17 +1,29 @@
-using System;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Mine.DesignPattern
 {
-    public class Singleton<T>:MonoBehaviour where T:MonoBehaviour
+    class Singleton<T> where T : new()
     {
         protected static T instance;
 
-        public static T Instance => instance;
-        protected virtual void Awake()
+        public static T Instance
         {
-            instance = transform.GetComponent<T>();
-            Debug.Log(instance.name);
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new T();
+                }
+                return instance;
+            }
+            set
+            {
+                instance = value;
+            }
         }
     }
 }

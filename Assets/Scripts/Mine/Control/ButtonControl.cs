@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Mine.Control
 {
-    public class ButtonControl:Singleton<ButtonControl>
+    public class ButtonControl:MonoSingleton<ButtonControl>
     {
         public Transform transformTopPanel;
         public Transform transformBottomPanel;
@@ -80,7 +80,7 @@ namespace Mine.Control
             transformBottomPanel.gameObject.SetActive(false);
             if (PlayerControl.globalItemShape == null)
             {
-                PlayerControl.Instance.StartTetris();
+                PlayerControl.Instance.OnceDropInit();
             }
             else if (PlayerControl.isGameOver)
             {
@@ -100,7 +100,7 @@ namespace Mine.Control
                 PlayerControl.Instance.txtScore.text = "0";
                 PlayerControl.isGameOver = false;
                 PlayerControl.panelAllShape.Clear();
-                PlayerControl.Instance.StartTetris();
+                PlayerControl.Instance.OnceDropInit();
             }
         }
     }
