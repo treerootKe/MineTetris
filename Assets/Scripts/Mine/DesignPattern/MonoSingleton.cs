@@ -6,9 +6,9 @@ namespace Mine.DesignPattern
 {
     public class MonoSingleton<T>: MonoBehaviour where T:MonoBehaviour
     {
-        protected static T instance;
+        private static T instance;
 
-        public static T Instance => instance;
+        protected static T Instance => instance;
         protected virtual void Awake()
         {
             instance = transform.GetComponent<T>();
