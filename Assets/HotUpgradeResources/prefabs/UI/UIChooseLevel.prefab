@@ -1317,7 +1317,7 @@ GameObject:
   - component: {fileID: 6757499494847823188}
   - component: {fileID: 6757499494847823189}
   m_Layer: 5
-  m_Name: UIChooseLevel
+  m_Name: uiChooseLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
