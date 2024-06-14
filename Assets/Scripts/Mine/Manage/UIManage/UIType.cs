@@ -4,5 +4,6 @@ namespace Mine.Manage.UIManage
     {
         Game,
         GameUI,
+        GameMenu,
     }
 }
