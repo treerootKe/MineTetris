@@ -1,9 +1,9 @@
-﻿using Mine.ObjectPoolItem;
+﻿using System.Collections.Generic;
+using Mine.ObjectPoolItem;
 using Mine.ToolClasses;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mine.Control
+namespace Mine.Common
 {
     public class CommonMembers
     {

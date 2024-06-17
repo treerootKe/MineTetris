@@ -7470,7 +7470,7 @@ GameObject:
   - component: {fileID: 4175335155233129155}
   - component: {fileID: 6809676533835803969}
   m_Layer: 5
-  m_Name: uiMainTetris
+  m_Name: UIMainTetris
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

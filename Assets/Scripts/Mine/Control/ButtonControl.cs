@@ -1,4 +1,5 @@
 using System;
+using Mine.Common;
 using Mine.DesignPattern;
 using Mine.Manage;
 using UnityEngine;
@@ -66,7 +67,7 @@ namespace Mine.Control
 
         public void EventPause()
         {
-            PlayerControl.isPausing = true;
+            UIMainTetrisControl.isPausing = true;
             transformTopPanel.gameObject.SetActive(false);
             transformDirectionKeys.gameObject.SetActive(false);
             transformBottomPanel.gameObject.SetActive(true);
@@ -74,33 +75,33 @@ namespace Mine.Control
 
         public void EventStart()
         {
-            PlayerControl.isPausing = false;
+            UIMainTetrisControl.isPausing = false;
             transformTopPanel.gameObject.SetActive(true);
             transformDirectionKeys.gameObject.SetActive(true);
             transformBottomPanel.gameObject.SetActive(false);
-            if (PlayerControl.globalItemShape == null)
+            if (UIMainTetrisControl.globalItemShape == null)
             {
-                PlayerControl.Instance.OnceDropInit();
+                UIMainTetrisControl.Instance.OnceDropInit();
             }
-            else if (PlayerControl.isGameOver)
+            else if (UIMainTetrisControl.isGameOver)
             {
-                for (int i = 0; i < PlayerControl.panelAllBlock.Count; i++) 
+                for (int i = 0; i < UIMainTetrisControl.panelAllBlock.Count; i++) 
                 {
-                    if (PlayerControl.panelAllBlock[i] != null)
+                    if (UIMainTetrisControl.panelAllBlock[i] != null)
                     {
-                        CommonMembers.blockPool.Recycle(PlayerControl.panelAllBlock[i]);
-                        PlayerControl.panelAllBlock[i] = null;
+                        CommonMembers.blockPool.Recycle(UIMainTetrisControl.panelAllBlock[i]);
+                        UIMainTetrisControl.panelAllBlock[i] = null;
                     }
                 }
-                foreach (var item in PlayerControl.panelAllShape)
+                foreach (var item in UIMainTetrisControl.panelAllShape)
                 {
                     CommonMembers.shapePool[item.shapeType].Recycle(item);    
                 }
 
-                PlayerControl.Instance.txtScore.text = "0";
-                PlayerControl.isGameOver = false;
-                PlayerControl.panelAllShape.Clear();
-                PlayerControl.Instance.OnceDropInit();
+                UIMainTetrisControl.Instance.txtScore.text = "0";
+                UIMainTetrisControl.isGameOver = false;
+                UIMainTetrisControl.panelAllShape.Clear();
+                UIMainTetrisControl.Instance.OnceDropInit();
             }
         }
     }

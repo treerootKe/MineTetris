@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using Mine.Common;
 using Mine.DesignPattern;
 using Mine.ToolClasses;
 using UnityEngine;

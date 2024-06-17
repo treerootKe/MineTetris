@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Mine.ToolClasses;
 using System;
+using Mine.Common;
 using Mine.DesignPattern;
 using UnityEditor;
 using UnityEngine.Serialization;
@@ -20,7 +21,7 @@ namespace Mine.Control
         RotateA,
         RotateB
     }
-    public class PlayerControl:MonoSingleton<PlayerControl>
+    public class UIMainTetrisControl:MonoSingleton<UIMainTetrisControl>
     {
         public Transform transformDropPanel;        //下落区域的父物体
         public Transform transformPrefab;           //预制体的父物体
