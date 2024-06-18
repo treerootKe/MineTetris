@@ -1,7 +1,7 @@
 using System;
-using Mine.Control;
+using Tetris.Control;
 
-namespace Mine.Manage
+namespace Tetris.Manage
 {
     public class EventManager
     {

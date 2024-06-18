@@ -1,11 +1,11 @@
 using System;
-using Mine.Common;
-using Mine.DesignPattern;
-using Mine.Manage;
+using Tetris.Common;
+using Tetris.DesignPattern;
+using Tetris.Manage;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mine.Control
+namespace Tetris.Control
 {
     public class ButtonControl:MonoSingleton<ButtonControl>
     {
@@ -89,13 +89,13 @@ namespace Mine.Control
                 {
                     if (UIMainTetrisControl.panelAllBlock[i] != null)
                     {
-                        CommonMembers.blockPool.Recycle(UIMainTetrisControl.panelAllBlock[i]);
+                        TetrisCommonMembers.blockPool.Recycle(UIMainTetrisControl.panelAllBlock[i]);
                         UIMainTetrisControl.panelAllBlock[i] = null;
                     }
                 }
                 foreach (var item in UIMainTetrisControl.panelAllShape)
                 {
-                    CommonMembers.shapePool[item.shapeType].Recycle(item);    
+                    TetrisCommonMembers.shapePool[item.shapeType].Recycle(item);    
                 }
 
                 UIMainTetrisControl.Instance.txtScore.text = "0";

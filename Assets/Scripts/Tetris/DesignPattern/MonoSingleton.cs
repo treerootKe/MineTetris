@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace Mine.DesignPattern
+namespace Tetris.DesignPattern
 {
     public class MonoSingleton<T>: MonoBehaviour where T:MonoBehaviour
     {

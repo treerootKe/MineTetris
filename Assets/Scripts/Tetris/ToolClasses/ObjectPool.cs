@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Mine.ToolClasses
+namespace Tetris.ToolClasses
 {
     public class ObjectPool<T>where T : Component
     {

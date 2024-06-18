@@ -1,4 +1,4 @@
-namespace Mine.Manage.UIManage
+namespace Tetris.Manage.UIManage
 {
     public class UIManager
     {

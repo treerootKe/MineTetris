@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Mine.ObjectPoolItem;
-using Mine.ToolClasses;
+using Tetris.ObjectPoolItem;
+using Tetris.ToolClasses;
 using UnityEngine;
 
-namespace Mine.Common
+namespace Tetris.Common
 {
-    public class CommonMembers
+    public class TetrisCommonMembers
     {
         public static ObjectPool<AudioSource> audioPool;
         public static ObjectPool<ItemShape>[] shapePool;

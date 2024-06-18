@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using Mine.Common;
-using Mine.DesignPattern;
-using Mine.ToolClasses;
+using Tetris.Common;
+using Tetris.DesignPattern;
+using Tetris.ToolClasses;
 using UnityEngine;
 
-namespace Mine.Control
+namespace Tetris.Control
 {
     public class AudioController : MonoSingleton<AudioController>
     {
@@ -31,15 +31,15 @@ namespace Mine.Control
                 { "Rotate", audioClipRotate },
                 { "Disappear", audioClipDisappear }
             };
-            CommonMembers.audioPool = new ObjectPool<AudioSource>(audioSource);
+            TetrisCommonMembers.audioPool = new ObjectPool<AudioSource>(audioSource);
         }
 
         public void PlaySound(string clipName)
         {
-            var sourceAudio = CommonMembers.audioPool.Get();
+            var sourceAudio = TetrisCommonMembers.audioPool.Get();
             sourceAudio.clip = _dicAudioClips[clipName];
             sourceAudio.Play();
-            DOVirtual.DelayedCall(sourceAudio.clip.length, () => CommonMembers.audioPool.Recycle(sourceAudio));
+            DOVirtual.DelayedCall(sourceAudio.clip.length, () => TetrisCommonMembers.audioPool.Recycle(sourceAudio));
         }
     }
 }

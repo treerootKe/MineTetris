@@ -1,18 +1,16 @@
 using System.Collections;
 using UnityEngine;
-using Mine.ObjectPoolItem;
+using Tetris.ObjectPoolItem;
 using System.Collections.Generic;
 using DG.Tweening;
-using Mine.ToolClasses;
-using System;
-using Mine.Common;
-using Mine.DesignPattern;
-using UnityEditor;
-using UnityEngine.Serialization;
+using Tetris.ToolClasses;
+using Tetris.Common;
+using Tetris.DesignPattern;
 using UnityEngine.UI;
-using Mine.Manage;
+using Tetris.Manage;
+using Control;
 
-namespace Mine.Control
+namespace Tetris.Control
 {
     public  enum ShapeChange
     {
@@ -54,7 +52,7 @@ namespace Mine.Control
 
         private void InitValues()
         {
-            CommonMembers.InitValue();
+            TetrisCommonMembers.InitValue();
             panelAllBlock = new List<Transform>();
             for (int i = 0; i < 210; i++)
             {
@@ -63,12 +61,12 @@ namespace Mine.Control
 
             panelAllShape = new List<ItemShape>();
             //初始化对象池
-            CommonMembers.shapePool = new ObjectPool<ItemShape>[7];
+            TetrisCommonMembers.shapePool = new ObjectPool<ItemShape>[7];
             for (int i = 0; i < 7; i++)
             {
-                CommonMembers.shapePool[i] = new ObjectPool<ItemShape>(transformPrefab.GetChild(i).GetComponent<ItemShape>());
+                TetrisCommonMembers.shapePool[i] = new ObjectPool<ItemShape>(transformPrefab.GetChild(i).GetComponent<ItemShape>());
             }
-            CommonMembers.blockPool = new ObjectPool<Transform>(transformPrefab.Find("block"));
+            TetrisCommonMembers.blockPool = new ObjectPool<Transform>(transformPrefab.Find("block"));
             fDropIntervals = new float[3] { 1, 0.5f, 0.25f };
             fDropIntervalFastest = 0.05f;
             fDropInterval = fDropIntervals[nDropIntervalLevel];
@@ -134,7 +132,7 @@ namespace Mine.Control
         {
             isFastDrop = true;
             gameObjectsNextShape[_mNextShape].SetActive(false);
-            globalItemShape = CommonMembers.shapePool[_mNextShape].Get(transformDropPanel);
+            globalItemShape = TetrisCommonMembers.shapePool[_mNextShape].Get(transformDropPanel);
             panelAllShape.Add(globalItemShape);
             _mNextShape = UnityEngine.Random.Range(0, 7);
             gameObjectsNextShape[_mNextShape].SetActive(true);
@@ -193,7 +191,7 @@ namespace Mine.Control
         IEnumerator BlockDisappear()
         {
             List<int> disappearRow = new List<int>();
-            for (int i = 0; i < 200; i+=10)
+            for (int i = 0; i < 200; i += 10) 
             {
                 bool isNeedDisappear = true;
                 for (int j = i; j < i + 10; j++)
@@ -209,7 +207,7 @@ namespace Mine.Control
                     disappearRow.Add(i);
                     for (int j = i; j < i + 10; j++)
                     {
-                        CommonMembers.blockPool.Recycle(panelAllBlock[j]);
+                        TetrisCommonMembers.blockPool.Recycle(panelAllBlock[j]);
                         panelAllBlock[j] = null;
                     }
                 }

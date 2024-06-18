@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Mine.Common;
+using Tetris.Common;
 using UnityEngine;
-using Mine.Control;
+using Tetris.Control;
 
-namespace Mine.ObjectPoolItem
+namespace Tetris.ObjectPoolItem
 {
     public class ItemShape: MonoBehaviour
     {
@@ -16,14 +16,14 @@ namespace Mine.ObjectPoolItem
         {
             blockPos = new int[4];
             fourBlock = new Transform[4];
-            _mBlockRotateInsidePos = CommonMembers.blockRotateInsidePos[shapeType];
+            _mBlockRotateInsidePos = TetrisCommonMembers.blockRotateInsidePos[shapeType];
         }
         private void OnEnable()
         {
             transform.localPosition = shapeType == 6 ? new Vector2(180, 810) : new Vector2(135, 765);
             for (int i = 0; i < fourBlock.Length; i++)
             {
-                fourBlock[i] = CommonMembers.blockPool.Get(transform);
+                fourBlock[i] = TetrisCommonMembers.blockPool.Get(transform);
             }
             shapeIndex = 0;
             SetBlockPos();
@@ -134,7 +134,7 @@ namespace Mine.ObjectPoolItem
 
             if (count == 4)
             {
-                CommonMembers.shapePool[shapeType].Recycle(transform.GetComponent<ItemShape>());
+                TetrisCommonMembers.shapePool[shapeType].Recycle(transform.GetComponent<ItemShape>());
                 return true;
             }
 
