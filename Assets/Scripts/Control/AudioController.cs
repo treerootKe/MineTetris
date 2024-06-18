@@ -6,7 +6,7 @@ using Tetris.DesignPattern;
 using Tetris.ToolClasses;
 using UnityEngine;
 
-namespace Tetris.Control
+namespace Control
 {
     public class AudioController : MonoSingleton<AudioController>
     {
