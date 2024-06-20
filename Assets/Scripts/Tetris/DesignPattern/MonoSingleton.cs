@@ -6,13 +6,13 @@ namespace Tetris.DesignPattern
 {
     public class MonoSingleton<T>: MonoBehaviour where T:MonoBehaviour
     {
-        private static T instance;
+        private static T _instance;
 
-        protected static T Instance => instance;
+        public static T Instance => _instance;
         protected virtual void Awake()
         {
-            instance = transform.GetComponent<T>();
-            Debug.Log(instance.name);
+            _instance = transform.GetComponent<T>();
+            Debug.Log(_instance.name);
         }
     }
 }

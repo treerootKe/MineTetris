@@ -121,7 +121,7 @@ namespace Tetris.ObjectPoolItem
         }
 
         //回收这一个Shape
-        public bool RecycleShape()
+        public bool IsPossibleRecycle()
         {
             int count = 0;
             foreach (var item in fourBlock)
