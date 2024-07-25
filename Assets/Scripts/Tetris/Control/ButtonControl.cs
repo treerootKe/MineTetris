@@ -2,6 +2,7 @@ using System;
 using Tetris.Common;
 using Tetris.DesignPattern;
 using Tetris.Manage;
+using Tetris.Manage.UIManage;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -63,6 +64,7 @@ namespace Tetris.Control
             
             btnPause.onClick.AddListener(EventPause);
             btnStart.onClick.AddListener(EventStart);
+            btnLevel.onClick.AddListener(() => UIManager.ShowUI(UIPath.uiChooseLevel));
         }
 
         public void EventPause()

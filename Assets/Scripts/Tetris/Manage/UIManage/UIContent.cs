@@ -1,6 +1,6 @@
 namespace Tetris.Manage.UIManage
 {
-    public class UIContent
+    public struct UIContent
     {
         public UIType uiType;
         public string uiPath;

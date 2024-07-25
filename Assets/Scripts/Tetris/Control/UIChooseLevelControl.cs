@@ -15,16 +15,16 @@ namespace Tetris.Control
             for (int i = 0; i < levelToggles.Length; i++)
             {
                 var i1 = i;
-                levelToggles[i].onValueChanged.AddListener((arg0 =>
+                levelToggles[i].onValueChanged.AddListener(arg0 =>
                 {
                     if (arg0)
                     {
                         UIMainTetrisControl.Instance.nDropIntervalLevel = i1;
                         UIMainTetrisControl.Instance.fDropInterval = UIMainTetrisControl.Instance.fDropIntervals[i1];
                     }
-                }));
+                });
             }
-            btnClose.onClick.AddListener((() => gameObject.SetActive(false)));
+            btnClose.onClick.AddListener(() => gameObject.SetActive(false));
         }
 
         private void FindComponent()
