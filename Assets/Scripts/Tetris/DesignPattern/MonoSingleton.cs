@@ -12,7 +12,6 @@ namespace Tetris.DesignPattern
         protected virtual void Awake()
         {
             _instance = transform.GetComponent<T>();
-            Debug.Log(_instance.name);
         }
     }
 }

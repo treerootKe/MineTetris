@@ -1,4 +1,5 @@
 using System;
+using Manage.UIManage;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,11 +21,12 @@ namespace Tetris.Control
                     if (arg0)
                     {
                         UIMainTetrisControl.Instance.nDropIntervalLevel = i1;
+                        UIMainTetrisControl.Instance.txtLevel.text = (i1 + 1).ToString();
                         UIMainTetrisControl.Instance.fDropInterval = UIMainTetrisControl.Instance.fDropIntervals[i1];
                     }
                 });
             }
-            btnClose.onClick.AddListener(() => gameObject.SetActive(false));
+            btnClose.onClick.AddListener(() => UIManager.CloseUI(UIPath.UIChooseLevel));
         }
 
         private void FindComponent()

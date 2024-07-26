@@ -5,12 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Common
+namespace Common
 {
-    class CommonCanvas:MonoBehaviour
+    public class CommonCanvas:MonoBehaviour
     {
-        private static Transform traGameMenuCanvas;
-        private static Transform traGameCanvas;
-        private static Transform traGameUICanvas;
+        public static Transform traGameMenuCanvas;  //选择界面菜单
+        public static Transform traGameCanvas;      //游戏主界面
+        public static Transform traGameUICanvas;    //游戏UI界面
+
+        private void Awake()
+        {
+            FindComponent();
+        }
+
+        private void FindComponent()
+        {
+            traGameMenuCanvas = transform.Find("GameMenuCanvas");
+            traGameCanvas = transform.Find("GameCanvas");
+            traGameUICanvas = transform.Find("GameUICanvas");
+        }
     }
 }

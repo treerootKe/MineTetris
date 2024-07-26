@@ -83,8 +83,8 @@ namespace Tetris.Control
             transformDropPanel = transform.Find("BlockDropArea/DropPanel");
             transformPrefab = transform.Find("Prefab");
             txtScore = transform.Find("ScoreArea/imgScore/txtScore").GetComponent<Text>();
-            txtHistoryScore = transform.Find("ScoreArea/imgScore/txtScore").GetComponent<Text>();
-            txtLevel = transform.Find("ScoreArea/imgScore/txtScore").GetComponent<Text>();
+            txtHistoryScore = transform.Find("ScoreArea/imgHistoryScore/txtHistoryScore").GetComponent<Text>();
+            txtLevel = transform.Find("ScoreArea/imgLevel/txtLevel").GetComponent<Text>();
             gameObjectsNextShape = new GameObject[7];
             for (int i = 0; i < 7; i++)
             {
