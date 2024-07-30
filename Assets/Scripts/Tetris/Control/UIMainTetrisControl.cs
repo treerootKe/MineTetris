@@ -24,20 +24,21 @@ namespace Tetris.Control
     {
         public Transform transformDropPanel; //下落区域的父物体
         public Transform transformPrefab; //预制体的父物体
-        public static List<Transform> panelAllBlock; //下落区域中的200个方块
-        public static List<ItemShape> panelAllShape; //下落区域中，所有的形状
+        public List<Transform> panelAllBlock; //下落区域中的200个方块
+        public List<ItemShape> panelAllShape; //下落区域中，所有的形状
         public GameObject[] gameObjectsNextShape; //下一个形状的游戏物体数组
-        public static ItemShape globalItemShape; //当前正在下落的形状
+        public ItemShape globalItemShape; //当前正在下落的形状
 
         private int _mScore; //当前总得分
         public bool isFastDrop; //形状是否可以进行快速下落                  
         private int _mNextShape; //下一个形状的索引(0--6，分别对应7种形状)
-        public float fDropInterval; //形状当前下落间隔
-        public float[] fDropIntervals; //形状每下落一次，需要等待间隔的数组
+        private float fDropInterval; //形状当前下落间隔
+        private float[] fDropIntervals; //形状每下落一次，需要等待间隔的数组
         public int nDropIntervalLevel; //形状下落间隔等级(0--2)
         public float fDropIntervalFastest; //形状快速下落时的等待间隔
-        public static bool isPausing; //是否正在暂停
-        public static bool isGameOver; //是否游戏结束
+        public bool isPausing; //是否正在暂停
+        public bool isGameOver; //是否游戏结束
+        private List<int> disappearRow = new List<int>();//本轮消失行的列表
 
         public Text txtScore; //分数显示文本
         public Text txtHistoryScore; //历史分数显示文本
@@ -108,7 +109,7 @@ namespace Tetris.Control
 
         private void Update()
         {
-            if (!isGameOver)
+            if (!isGameOver && globalItemShape != null)
             {
                 if (Input.GetKeyDown(KeyCode.A))
                 {
@@ -147,10 +148,11 @@ namespace Tetris.Control
             panelAllShape.Add(globalItemShape);
             _mNextShape = Random.Range(0, 7);
             gameObjectsNextShape[_mNextShape].SetActive(true);
-            _mIEBlockDrop = BlockDrop(globalItemShape);
+            _mIEBlockDrop = ShapeDrop(globalItemShape);
             StartTetris();
         }
 
+        //开始判定
         private void StartTetris()
         {
             if (!globalItemShape.JudgeIsPossibleDrop(panelAllBlock))
@@ -164,7 +166,8 @@ namespace Tetris.Control
             StartCoroutine(_mIEBlockDrop);
         }
 
-        IEnumerator BlockDrop(ItemShape item, bool isRecursion = false)
+        //形状下落
+        IEnumerator ShapeDrop(ItemShape item, bool isRecursion = false)
         {
             yield return new WaitForSeconds(fDropInterval);
             while (item.JudgeIsPossibleDrop(panelAllBlock))
@@ -182,7 +185,7 @@ namespace Tetris.Control
             yield return new WaitForSeconds(0.1f);
             if (item.JudgeIsPossibleDrop(panelAllBlock))
             {
-                yield return BlockDrop(item, true);
+                yield return ShapeDrop(item, true);
             }
 
             if (isRecursion)
@@ -192,22 +195,23 @@ namespace Tetris.Control
 
             for (int i = 0; i < 4; i++)
             {
-                panelAllBlock[item.blockPos[i]] = item.fourBlock[i];
+                panelAllBlock[item.posFourBlock[i]] = item.traFourBlock[i];
             }
-            
+
+            globalItemShape = null;
             yield return BlockDisappear();
             while (isPausing)
             {
                 yield return null;
             }
 
-            globalItemShape = null;
             OnceDropInit();
         }
 
+        //方块消失
         IEnumerator BlockDisappear()
         {
-            List<int> disappearRow = new List<int>();
+            disappearRow.Clear();
             for (int i = 0; i < 200; i += 10)
             {
                 bool isNeedDisappear = true;
@@ -244,8 +248,7 @@ namespace Tetris.Control
                         {
                             if (panelAllBlock[j] != null)
                             {
-                                panelAllBlock[j]
-                                    .DOLocalMoveY(panelAllBlock[j].transform.localPosition.y - 45 * dropCounts, 0.001f);
+                                panelAllBlock[j].DOLocalMoveY(panelAllBlock[j].transform.localPosition.y - 45 * dropCounts, 0.01f);
                                 panelAllBlock[j - dropCounts * 10] = panelAllBlock[j];
                                 panelAllBlock[j] = null;
                             }
@@ -253,7 +256,7 @@ namespace Tetris.Control
                     }
                 }
 
-                yield return new WaitForSeconds(0.001f);
+                yield return new WaitForSeconds(0.01f);
 
                 for (int i = 0; i < panelAllShape.Count; i++)
                 {
@@ -268,14 +271,17 @@ namespace Tetris.Control
             }
         }
 
+        //加分，数字滚动
         private void AddScore(int nDisappearLine)
         {
             int nOnceScore = nDisappearLine * nDisappearLine * 100;
-            DOTween.To(endValue => { txtScore.text = ((int)endValue).ToString(); }, _mScore, _mScore + nOnceScore, 1)
-                .OnComplete(() => _mScore += nOnceScore);
+            DOTween.To(endValue => 
+            { 
+                txtScore.text = ((int)endValue).ToString(); 
+            }, _mScore, _mScore + nOnceScore, 1).OnComplete(() => _mScore += nOnceScore);
         }
 
-        //判断屏幕中一行能够下落
+        //判断该行是否能够下落
         private bool JudgeIsPossibleDrop(int rowIndex)
         {
             for (int i = rowIndex; i < rowIndex + 10; i++)
@@ -289,7 +295,7 @@ namespace Tetris.Control
             return false;
         }
 
-        //屏幕中一行方块下落的格数
+        //一行方块下落的格数
         private int RowDropCounts(List<int> disappearRow, int rowIndex)
         {
             int count = 0;

@@ -24,7 +24,7 @@ namespace Tetris.ToolClasses
         public T Get(Transform transformParent)
         {
             var item = _mObjectStack.Count == 0 ? Object.Instantiate(_mInitObject.gameObject).GetComponent<T>() : _mObjectStack.Pop();
-            
+
             Transform transform;
             (transform = item.transform).SetParent(transformParent);
             transform.localScale = Vector3.one;

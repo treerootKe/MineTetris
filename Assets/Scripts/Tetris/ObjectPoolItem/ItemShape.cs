@@ -9,22 +9,23 @@ namespace Tetris.ObjectPoolItem
     {
         public int shapeType;                           //形状的类型
         public int shapeIndex;                          //形状当前变换的位置
-        public int[] blockPos;                          //方块在整个下落区域的位置集合
-        public Transform[] fourBlock;                   //形状内部的四个方块
+        public int[] posFourBlock;                      //方块在整个下落区域的位置集合
+        public Transform[] traFourBlock;                //形状内部的四个方块
         private List<Vector2[]> _mBlockRotateInsidePos; //形状改变后，方块在内部位置坐标集合
         private void Awake()
         {
-            blockPos = new int[4];
-            fourBlock = new Transform[4];
+            posFourBlock = new int[4];
+            traFourBlock = new Transform[4];
             _mBlockRotateInsidePos = TetrisCommonMembers.blockRotateInsidePos[shapeType];
         }
         private void OnEnable()
         {
-            transform.localPosition = shapeType == 6 ? new Vector2(180, 810) : new Vector2(135, 765);
-            for (int i = 0; i < fourBlock.Length; i++)
+            transform.localPosition = (shapeType == 6 ? new Vector2(180, 810) : new Vector2(135, 765));
+            for (int i = 0; i < traFourBlock.Length; i++)
             {
-                fourBlock[i] = TetrisCommonMembers.blockPool.Get(transform);
+                traFourBlock[i] = TetrisCommonMembers.blockPool.Get(transform);
             }
+
             shapeIndex = 0;
             SetBlockPos();
         }
@@ -42,11 +43,11 @@ namespace Tetris.ObjectPoolItem
             }
             var pos = transform.localPosition;
             var posTrans = (int)(pos.y * 10 + pos.x) / 45;
-            for (int i = 0; i < fourBlock.Length; i++)
+            for (int i = 0; i < traFourBlock.Length; i++)
             {
                 var posBlock = (int)(_mBlockRotateInsidePos[shapeIndex][i].y * 10 + _mBlockRotateInsidePos[shapeIndex][i].x) / 45;
-                fourBlock[i].localPosition = _mBlockRotateInsidePos[shapeIndex][i];
-                blockPos[i] = posTrans + posBlock;
+                traFourBlock[i].localPosition = _mBlockRotateInsidePos[shapeIndex][i];
+                posFourBlock[i] = posTrans + posBlock;
             }
         }
 
@@ -84,15 +85,15 @@ namespace Tetris.ObjectPoolItem
             var nextBlockPos = new int[4];
             for (int i = 0; i < 4; i++)
             {
-                if (blockPos[i] % 10 == 0 && direction == ShapeChange.Left)
+                if (posFourBlock[i] % 10 == 0 && direction == ShapeChange.Left)
                 {
                     return false;
                 }
-                if (blockPos[i] % 10 == 9 && direction == ShapeChange.Right)
+                if (posFourBlock[i] % 10 == 9 && direction == ShapeChange.Right)
                 {
                     return false;
                 }
-                nextBlockPos[i] = direction == ShapeChange.Left ? blockPos[i] - 1 : blockPos[i] + 1;
+                nextBlockPos[i] = direction == ShapeChange.Left ? posFourBlock[i] - 1 : posFourBlock[i] + 1;
                 if (allPos[nextBlockPos[i]] != null)
                 {
                     return false;
@@ -107,11 +108,11 @@ namespace Tetris.ObjectPoolItem
             var nextBlockPos = new int[4];
             for (int i = 0; i < 4; i++)
             {
-                if (blockPos[i] < 10)
+                if (posFourBlock[i] < 10)
                 {
                     return false;
                 }
-                nextBlockPos[i] = blockPos[i] - 10;
+                nextBlockPos[i] = posFourBlock[i] - 10;
                 if (allPos[nextBlockPos[i]] != null)
                 {
                     return false;
@@ -124,7 +125,7 @@ namespace Tetris.ObjectPoolItem
         public bool IsPossibleRecycle()
         {
             int count = 0;
-            foreach (var item in fourBlock)
+            foreach (var item in traFourBlock)
             {
                 if (!item.gameObject.activeInHierarchy)
                 {

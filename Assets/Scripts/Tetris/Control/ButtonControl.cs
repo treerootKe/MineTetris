@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Manage.UIManage;
 using System;
 using Tetris.Common;
@@ -27,6 +28,9 @@ namespace Tetris.Control
         public Button btnLeft;
         public Button btnRight;
 
+        //玩家控制对象实例
+        public UIMainTetrisControl mainInstance;
+
         protected override void Awake()
         {
             base.Awake();
@@ -52,6 +56,8 @@ namespace Tetris.Control
             btnDown = transform.Find("DirectionKeys/btnDown").GetComponent<Button>();
             btnLeft = transform.Find("DirectionKeys/btnLeft").GetComponent<Button>();
             btnRight = transform.Find("DirectionKeys/btnRight").GetComponent<Button>();
+
+            mainInstance = UIMainTetrisControl.Instance;
         }
 
         private void RegisterButtonEvent()
@@ -63,47 +69,47 @@ namespace Tetris.Control
             btnDown.onClick.AddListener(()=>EventManager.eventDropFastest?.Invoke());
             
             btnPause.onClick.AddListener(EventPause);
-            btnStart.onClick.AddListener(EventStart);
+            btnStart.onClick.AddListener(EventGameStart);
             btnLevel.onClick.AddListener(() => UIManager.ShowUI(UIPath.UIChooseLevel));
         }
 
         public void EventPause()
         {
-            UIMainTetrisControl.isPausing = true;
+            mainInstance.isPausing = true;
             transformTopPanel.gameObject.SetActive(false);
             transformDirectionKeys.gameObject.SetActive(false);
             transformBottomPanel.gameObject.SetActive(true);
         }
 
-        public void EventStart()
+        public void EventGameStart()
         {
-            UIMainTetrisControl.isPausing = false;
+            mainInstance.isPausing = false;
             transformTopPanel.gameObject.SetActive(true);
             transformDirectionKeys.gameObject.SetActive(true);
             transformBottomPanel.gameObject.SetActive(false);
-            if (UIMainTetrisControl.globalItemShape == null)
+            if (mainInstance.globalItemShape == null)
             {
-                UIMainTetrisControl.Instance.OnceDropInit();
+                mainInstance.OnceDropInit();
             }
-            else if (UIMainTetrisControl.isGameOver)
+            else if (mainInstance.isGameOver)
             {
-                for (int i = 0; i < UIMainTetrisControl.panelAllBlock.Count; i++) 
+                for (int i = 0; i < mainInstance.panelAllBlock.Count; i++) 
                 {
-                    if (UIMainTetrisControl.panelAllBlock[i] != null)
+                    if (mainInstance.panelAllBlock[i] != null)
                     {
-                        TetrisCommonMembers.blockPool.Recycle(UIMainTetrisControl.panelAllBlock[i]);
-                        UIMainTetrisControl.panelAllBlock[i] = null;
+                        TetrisCommonMembers.blockPool.Recycle(mainInstance.panelAllBlock[i]);
+                        mainInstance.panelAllBlock[i] = null;
                     }
                 }
-                foreach (var item in UIMainTetrisControl.panelAllShape)
+                foreach (var item in mainInstance.panelAllShape)
                 {
                     TetrisCommonMembers.shapePool[item.shapeType].Recycle(item);    
                 }
 
-                UIMainTetrisControl.Instance.txtScore.text = "0";
-                UIMainTetrisControl.isGameOver = false;
-                UIMainTetrisControl.panelAllShape.Clear();
-                UIMainTetrisControl.Instance.OnceDropInit();
+                mainInstance.txtScore.text = "0";
+                mainInstance.isGameOver = false;
+                mainInstance.panelAllShape.Clear();
+                mainInstance.OnceDropInit();
             }
         }
     }
