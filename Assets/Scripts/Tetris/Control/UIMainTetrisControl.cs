@@ -3,9 +3,9 @@ using UnityEngine;
 using Tetris.ObjectPoolItem;
 using System.Collections.Generic;
 using DG.Tweening;
-using Tetris.ToolClasses;
+using ToolClasses;
 using Tetris.Common;
-using Tetris.DesignPattern;
+using DesignPattern;
 using UnityEngine.UI;
 using Tetris.Manage;
 using Control;
@@ -22,27 +22,31 @@ namespace Tetris.Control
 
     public class UIMainTetrisControl : MonoSingleton<UIMainTetrisControl>
     {
-        public Transform transformDropPanel; //下落区域的父物体
-        public Transform transformPrefab; //预制体的父物体
+        public Transform traTopPanel;//顶部面板
+        public Transform traBottomPanel;//底部面板
+        public Transform traDirectionKeys;//方向键面板
+
+        public Transform traDropPanel; //下落区域的父物体
+        public Transform traPrefab; //预制体的父物体
         public List<Transform> panelAllBlock; //下落区域中的200个方块
         public List<ItemShape> panelAllShape; //下落区域中，所有的形状
         public GameObject[] gameObjectsNextShape; //下一个形状的游戏物体数组
         public ItemShape globalItemShape; //当前正在下落的形状
 
         private int _mScore; //当前总得分
-        public bool isFastDrop; //形状是否可以进行快速下落                  
+        private bool isFastDrop; //形状是否可以进行快速下落                  
         private int _mNextShape; //下一个形状的索引(0--6，分别对应7种形状)
         private float fDropInterval; //形状当前下落间隔
         private float[] fDropIntervals; //形状每下落一次，需要等待间隔的数组
-        public int nDropIntervalLevel; //形状下落间隔等级(0--2)
-        public float fDropIntervalFastest; //形状快速下落时的等待间隔
+        private int nDropIntervalLevel; //形状下落间隔等级(0--2)
+        private float fDropIntervalFastest; //形状快速下落时的等待间隔
         public bool isPausing; //是否正在暂停
         public bool isGameOver; //是否游戏结束
         private List<int> disappearRow = new List<int>();//本轮消失行的列表
 
         public Text txtScore; //分数显示文本
-        public Text txtHistoryScore; //历史分数显示文本
-        public Text txtLevel; //形状下落间隔等级显示文本
+        private Text txtHistoryScore; //历史分数显示文本
+        private Text txtLevel; //形状下落间隔等级显示文本
 
         private IEnumerator _mIEBlockDrop; //形状下落的协程
 
@@ -68,21 +72,25 @@ namespace Tetris.Control
             for (int i = 0; i < 7; i++)
             {
                 TetrisCommonMembers.shapePool[i] =
-                    new ObjectPool<ItemShape>(transformPrefab.GetChild(i).GetComponent<ItemShape>());
+                    new ObjectPool<ItemShape>(traPrefab.GetChild(i).GetComponent<ItemShape>());
             }
 
-            TetrisCommonMembers.blockPool = new ObjectPool<Transform>(transformPrefab.Find("block"));
+            TetrisCommonMembers.blockPool = new ObjectPool<Transform>(traPrefab.Find("block"));
             fDropIntervals = new float[3] { 1, 0.5f, 0.25f };
             fDropIntervalFastest = 0.05f;
             fDropInterval = fDropIntervals[nDropIntervalLevel];
-            _mNextShape = UnityEngine.Random.Range(0, 7);
+            _mNextShape = Random.Range(0, 7);
         }
 
         //获取组件
         private void FindComponent()
         {
-            transformDropPanel = transform.Find("BlockDropArea/DropPanel");
-            transformPrefab = transform.Find("Prefab");
+            traTopPanel = transform.Find("TopPanel");
+            traBottomPanel = transform.Find("BottomPanel");
+            traDirectionKeys = transform.Find("DirectionKeys");
+
+            traDropPanel = transform.Find("BlockDropArea/DropPanel");
+            traPrefab = transform.Find("Prefab");
             txtScore = transform.Find("ScoreArea/imgScore/txtScore").GetComponent<Text>();
             txtHistoryScore = transform.Find("ScoreArea/imgHistoryScore/txtHistoryScore").GetComponent<Text>();
             txtLevel = transform.Find("ScoreArea/imgLevel/txtLevel").GetComponent<Text>();
@@ -95,16 +103,26 @@ namespace Tetris.Control
 
         private void OnEnable()
         {
-            EventManager.eventShapeMoveX += EventShapeMoveX;
-            EventManager.eventDropFastest += EventDropFastest;
-            EventManager.eventShapeRotate += EventShapeRotate;
+            TetrisEventManager.eventShapeMoveX += EventShapeMoveX;
+            TetrisEventManager.eventDropFastest += EventDropFastest;
+            TetrisEventManager.eventShapeRotate += EventShapeRotate;
+            TetrisEventManager.eventChangeLevel += EventChangeLevel;
+
+            TetrisEventManager.eventPauseGame += EventPauseGame;
+            TetrisEventManager.eventStartGame += EventStartGame;
+            TetrisEventManager.eventRestartGame += EventRestartGame;
         }
 
         private void OnDisable()
         {
-            EventManager.eventShapeMoveX -= EventShapeMoveX;
-            EventManager.eventDropFastest -= EventDropFastest;
-            EventManager.eventShapeRotate -= EventShapeRotate;
+            TetrisEventManager.eventShapeMoveX -= EventShapeMoveX;
+            TetrisEventManager.eventDropFastest -= EventDropFastest;
+            TetrisEventManager.eventShapeRotate -= EventShapeRotate;
+            TetrisEventManager.eventChangeLevel -= EventChangeLevel;
+
+            TetrisEventManager.eventPauseGame -= EventPauseGame;
+            TetrisEventManager.eventStartGame -= EventStartGame;
+            TetrisEventManager.eventRestartGame -= EventRestartGame;
         }
 
         private void Update()
@@ -113,27 +131,27 @@ namespace Tetris.Control
             {
                 if (Input.GetKeyDown(KeyCode.A))
                 {
-                    EventManager.eventShapeRotate?.Invoke(ShapeChange.RotateA);
+                    TetrisEventManager.eventShapeRotate?.Invoke(ShapeChange.RotateA);
                 }
 
                 if (Input.GetKeyDown(KeyCode.B))
                 {
-                    EventManager.eventShapeRotate?.Invoke(ShapeChange.RotateB);
+                    TetrisEventManager.eventShapeRotate?.Invoke(ShapeChange.RotateB);
                 }
 
                 if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
-                    EventManager.eventShapeMoveX?.Invoke(ShapeChange.Left);
+                    TetrisEventManager.eventShapeMoveX?.Invoke(ShapeChange.Left);
                 }
 
                 if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
-                    EventManager.eventShapeMoveX?.Invoke(ShapeChange.Right);
+                    TetrisEventManager.eventShapeMoveX?.Invoke(ShapeChange.Right);
                 }
 
                 if (Input.GetKeyDown(KeyCode.DownArrow))
                 {
-                    EventManager.eventDropFastest?.Invoke();
+                    TetrisEventManager.eventDropFastest?.Invoke();
                 }
             }
         }
@@ -144,7 +162,7 @@ namespace Tetris.Control
             isFastDrop = true;
             fDropInterval = fDropIntervals[nDropIntervalLevel];
             gameObjectsNextShape[_mNextShape].SetActive(false);
-            globalItemShape = TetrisCommonMembers.shapePool[_mNextShape].Get(transformDropPanel);
+            globalItemShape = TetrisCommonMembers.shapePool[_mNextShape].Get(traDropPanel);
             panelAllShape.Add(globalItemShape);
             _mNextShape = Random.Range(0, 7);
             gameObjectsNextShape[_mNextShape].SetActive(true);
@@ -155,11 +173,10 @@ namespace Tetris.Control
         //开始判定
         private void StartTetris()
         {
-            if (!globalItemShape.JudgeIsPossibleDrop(panelAllBlock))
+            if (!globalItemShape.JudgeIsPossibleDrop(panelAllBlock)) 
             {
-                Debug.Log("game over");
                 isGameOver = true;
-                ButtonControl.Instance.EventPause();
+                TetrisEventManager.eventPauseGame?.Invoke();
                 return;
             }
 
@@ -367,6 +384,63 @@ namespace Tetris.Control
             }
         }
 
-        #endregion
+        //改变形状下落速度
+        private void EventChangeLevel(int index)
+        {
+            nDropIntervalLevel = index;
+            txtLevel.text = (index + 1).ToString();
+            fDropInterval = fDropIntervals[index];
+        }
+
+
+        public void EventPauseGame()
+        {
+            isPausing = true;
+            traTopPanel.gameObject.SetActive(false);
+            traDirectionKeys.gameObject.SetActive(false);
+            traBottomPanel.gameObject.SetActive(true);
+        }
+
+        public void EventStartGame()
+        {
+            isPausing = false;
+            traTopPanel.gameObject.SetActive(true);
+            traDirectionKeys.gameObject.SetActive(true);
+            traBottomPanel.gameObject.SetActive(false);
+            if (globalItemShape == null)
+            {
+                OnceDropInit();
+            }
+            else if (isGameOver)
+            {
+                TetrisEventManager.eventRestartGame?.Invoke();
+            }
+        }
+        public void EventRestartGame()
+        {
+            StopCoroutine(_mIEBlockDrop);
+            globalItemShape.RecycleBlock();
+            for (int i = 0; i < panelAllBlock.Count; i++)
+            {
+                if (panelAllBlock[i] != null)
+                {
+                    TetrisCommonMembers.blockPool.Recycle(panelAllBlock[i]);
+                    panelAllBlock[i] = null;
+                }
+            }
+            foreach (var item in panelAllShape)
+            {
+                TetrisCommonMembers.shapePool[item.shapeType].Recycle(item);
+            }
+            isPausing = false;
+            traTopPanel.gameObject.SetActive(true);
+            traDirectionKeys.gameObject.SetActive(true);
+            traBottomPanel.gameObject.SetActive(false);
+            txtScore.text = "0";
+            isGameOver = false;
+            panelAllShape.Clear();
+            OnceDropInit();
+        }
     }
+    #endregion
 }

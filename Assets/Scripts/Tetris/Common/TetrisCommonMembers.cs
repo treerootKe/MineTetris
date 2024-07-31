@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Tetris.ObjectPoolItem;
-using Tetris.ToolClasses;
+using ToolClasses;
 using UnityEngine;
 
 namespace Tetris.Common

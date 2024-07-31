@@ -2,7 +2,7 @@ using DG.Tweening;
 using Manage.UIManage;
 using System;
 using Tetris.Common;
-using Tetris.DesignPattern;
+using DesignPattern;
 using Tetris.Manage;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,10 +11,6 @@ namespace Tetris.Control
 {
     public class ButtonControl:MonoSingleton<ButtonControl>
     {
-        public Transform transformTopPanel;
-        public Transform transformBottomPanel;
-        public Transform transformDirectionKeys;
-        
         public Button btnPause;
         
         public Button btnStart;
@@ -40,10 +36,6 @@ namespace Tetris.Control
 
         private void FindComponent()
         {
-            transformTopPanel = transform.Find("TopPanel");
-            transformBottomPanel = transform.Find("BottomPanel");
-            transformDirectionKeys = transform.Find("DirectionKeys");
-            
             btnPause = transform.Find("TopPanel/btnPause").GetComponent<Button>();
 
             btnStart = transform.Find("BottomPanel/btnStart").GetComponent<Button>();
@@ -62,55 +54,16 @@ namespace Tetris.Control
 
         private void RegisterButtonEvent()
         {
-            btnLeft.onClick.AddListener(()=>EventManager.eventShapeMoveX?.Invoke(ShapeChange.Left));
-            btnRight.onClick.AddListener(()=>EventManager.eventShapeMoveX?.Invoke(ShapeChange.Right));
-            btnA.onClick.AddListener(() => EventManager.eventShapeRotate?.Invoke(ShapeChange.RotateA));
-            btnB.onClick.AddListener(() => EventManager.eventShapeRotate?.Invoke(ShapeChange.RotateB));
-            btnDown.onClick.AddListener(()=>EventManager.eventDropFastest?.Invoke());
+            btnLeft.onClick.AddListener(()=>TetrisEventManager.eventShapeMoveX?.Invoke(ShapeChange.Left));
+            btnRight.onClick.AddListener(()=>TetrisEventManager.eventShapeMoveX?.Invoke(ShapeChange.Right));
+            btnA.onClick.AddListener(() => TetrisEventManager.eventShapeRotate?.Invoke(ShapeChange.RotateA));
+            btnB.onClick.AddListener(() => TetrisEventManager.eventShapeRotate?.Invoke(ShapeChange.RotateB));
+            btnDown.onClick.AddListener(()=>TetrisEventManager.eventDropFastest?.Invoke());
             
-            btnPause.onClick.AddListener(EventPause);
-            btnStart.onClick.AddListener(EventGameStart);
+            btnPause.onClick.AddListener(() => TetrisEventManager.eventPauseGame?.Invoke());
+            btnStart.onClick.AddListener(() => TetrisEventManager.eventStartGame?.Invoke());
+            btnRestart.onClick.AddListener(() => TetrisEventManager.eventRestartGame?.Invoke());
             btnLevel.onClick.AddListener(() => UIManager.ShowUI(UIPath.UIChooseLevel));
-        }
-
-        public void EventPause()
-        {
-            mainInstance.isPausing = true;
-            transformTopPanel.gameObject.SetActive(false);
-            transformDirectionKeys.gameObject.SetActive(false);
-            transformBottomPanel.gameObject.SetActive(true);
-        }
-
-        public void EventGameStart()
-        {
-            mainInstance.isPausing = false;
-            transformTopPanel.gameObject.SetActive(true);
-            transformDirectionKeys.gameObject.SetActive(true);
-            transformBottomPanel.gameObject.SetActive(false);
-            if (mainInstance.globalItemShape == null)
-            {
-                mainInstance.OnceDropInit();
-            }
-            else if (mainInstance.isGameOver)
-            {
-                for (int i = 0; i < mainInstance.panelAllBlock.Count; i++) 
-                {
-                    if (mainInstance.panelAllBlock[i] != null)
-                    {
-                        TetrisCommonMembers.blockPool.Recycle(mainInstance.panelAllBlock[i]);
-                        mainInstance.panelAllBlock[i] = null;
-                    }
-                }
-                foreach (var item in mainInstance.panelAllShape)
-                {
-                    TetrisCommonMembers.shapePool[item.shapeType].Recycle(item);    
-                }
-
-                mainInstance.txtScore.text = "0";
-                mainInstance.isGameOver = false;
-                mainInstance.panelAllShape.Clear();
-                mainInstance.OnceDropInit();
-            }
         }
     }
 }

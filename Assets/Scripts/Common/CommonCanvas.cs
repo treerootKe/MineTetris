@@ -9,8 +9,8 @@ namespace Common
 {
     public class CommonCanvas:MonoBehaviour
     {
-        public static Transform traGameMenuCanvas;  //选择界面菜单
-        public static Transform traGameCanvas;      //游戏主界面
+        public static Transform traGameMenuCanvas;  //菜单UI界面
+        public static Transform traGameCanvas;      //游戏主体UI界面
         public static Transform traGameUICanvas;    //游戏UI界面
 
         private void Awake()

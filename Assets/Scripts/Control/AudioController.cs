@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Tetris.Common;
-using Tetris.DesignPattern;
-using Tetris.ToolClasses;
+using DesignPattern;
+using ToolClasses;
 using UnityEngine;
 
 namespace Control

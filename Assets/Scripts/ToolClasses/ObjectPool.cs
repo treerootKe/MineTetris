@@ -1,8 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tetris.ToolClasses
+namespace ToolClasses
 {
+    /// <summary>
+    /// 游戏对象池
+    /// </summary>
+    /// <typeparam 初始类元素="T"></typeparam>
     public class ObjectPool<T>where T : Component
     {
         private readonly T _mInitObject;

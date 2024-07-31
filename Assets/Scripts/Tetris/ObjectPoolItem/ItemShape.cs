@@ -141,5 +141,13 @@ namespace Tetris.ObjectPoolItem
 
             return false;
         }
+
+        public void RecycleBlock()
+        {
+            foreach (var block in traFourBlock)
+            {
+                TetrisCommonMembers.blockPool.Recycle(block);
+            }
+        }
     }
 }

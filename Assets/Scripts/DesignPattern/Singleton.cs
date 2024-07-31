@@ -1,4 +1,4 @@
-namespace Tetris.DesignPattern
+namespace DesignPattern
 {
     public class Singleton<T> where T:new()
     {
