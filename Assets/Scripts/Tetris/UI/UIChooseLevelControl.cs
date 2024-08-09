@@ -4,7 +4,7 @@ using Tetris.Manage;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Tetris.Control
+namespace Tetris.UI
 {
     public class UIChooseLevelControl:MonoBehaviour
     {

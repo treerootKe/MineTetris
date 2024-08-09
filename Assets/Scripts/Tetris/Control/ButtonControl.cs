@@ -25,7 +25,7 @@ namespace Tetris.Control
         public Button btnRight;
 
         //玩家控制对象实例
-        public UIMainTetrisControl mainInstance;
+        public MainTetrisControl mainInstance;
 
         protected override void Awake()
         {
@@ -49,7 +49,7 @@ namespace Tetris.Control
             btnLeft = transform.Find("DirectionKeys/btnLeft").GetComponent<Button>();
             btnRight = transform.Find("DirectionKeys/btnRight").GetComponent<Button>();
 
-            mainInstance = UIMainTetrisControl.Instance;
+            mainInstance = MainTetrisControl.Instance;
         }
 
         private void RegisterButtonEvent()
@@ -64,6 +64,7 @@ namespace Tetris.Control
             btnStart.onClick.AddListener(() => TetrisEventManager.eventStartGame?.Invoke());
             btnRestart.onClick.AddListener(() => TetrisEventManager.eventRestartGame?.Invoke());
             btnLevel.onClick.AddListener(() => UIManager.ShowUI(UIPath.UIChooseLevel));
+            btnSetting.onClick.AddListener(() => UIManager.ShowUI(UIPath.UIChangeVolume));
         }
     }
 }

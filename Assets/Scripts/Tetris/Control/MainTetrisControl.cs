@@ -20,7 +20,7 @@ namespace Tetris.Control
         RotateB
     }
 
-    public class UIMainTetrisControl : MonoSingleton<UIMainTetrisControl>
+    public class MainTetrisControl : MonoSingleton<MainTetrisControl>
     {
         public Transform traTopPanel;//顶部面板
         public Transform traBottomPanel;//底部面板
@@ -52,6 +52,7 @@ namespace Tetris.Control
 
         protected override void Awake()
         {
+            AudioController.Instance.PlayBgm("Bgm");
             base.Awake();
             FindComponent();
             InitValues();
