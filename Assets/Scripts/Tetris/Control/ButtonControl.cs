@@ -24,9 +24,6 @@ namespace Tetris.Control
         public Button btnLeft;
         public Button btnRight;
 
-        //玩家控制对象实例
-        public MainTetrisControl mainInstance;
-
         protected override void Awake()
         {
             base.Awake();
@@ -48,8 +45,6 @@ namespace Tetris.Control
             btnDown = transform.Find("DirectionKeys/btnDown").GetComponent<Button>();
             btnLeft = transform.Find("DirectionKeys/btnLeft").GetComponent<Button>();
             btnRight = transform.Find("DirectionKeys/btnRight").GetComponent<Button>();
-
-            mainInstance = MainTetrisControl.Instance;
         }
 
         private void RegisterButtonEvent()
