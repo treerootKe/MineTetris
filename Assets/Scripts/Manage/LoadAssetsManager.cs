@@ -36,7 +36,7 @@ namespace Manage
 
                 // 实例化预制体  
                 GameObject prefab = request.asset as GameObject;
-                Instantiate(prefab);
+                Object.Instantiate(prefab);
                 // 实例化预制体  
                 // Instantiate(loadedAsset);  
 
