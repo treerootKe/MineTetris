@@ -17,8 +17,18 @@ public class AssetBundleManager : MonoBehaviour
         StartCoroutine(LoadAssetBundle());
 #endif
     }
+
+    public void Load(string path, GameObject prefab = null)
+    {
+#if UNITY_EDITOR
+        string path1 = Path.Combine("Asset", path);
+        prefab = (GameObject)AssetDatabase.LoadAssetAtPath(path1, typeof(GameObject));
+        prefab = Object.Instantiate(prefab);
+#else
+        StartCoroutine(LoadAssetBundle());
+#endif
+    }
     
-  
     IEnumerator LoadAssetBundle()  
     {  
         string assetBundlePath = Path.Combine(Application.streamingAssetsPath, "tetris");

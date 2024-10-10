@@ -6,32 +6,32 @@ namespace Manage.UIManage
 {
     public class UIManager
     {
-        private static Dictionary<UIContent,GameObject> dicUIPrefab = new Dictionary<UIContent, GameObject>();
+        private static readonly Dictionary<UIContent,GameObject> DicUIPrefab = new Dictionary<UIContent, GameObject>();
         public static void ShowUI(UIContent content)
         {
-            if (dicUIPrefab.ContainsKey(content))
+            if (DicUIPrefab.TryGetValue(content, out var value))
             {
-                dicUIPrefab[content].SetActive(true);
+                value.SetActive(true);
                 return;
             }
-            // Ê¹ÓÃAssetDatabaseÀ´¼ÓÔØÔ¤ÖÆÌå
+            // Ê¹ï¿½ï¿½AssetDatabaseï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(content.uiPath);
             GameObject instance = Object.Instantiate(prefab, content.traUIParent);  
-            dicUIPrefab.Add(content, instance);
+            DicUIPrefab.Add(content, instance);
         }
 
         public static void CloseUI(UIContent content)
         {
-            if (dicUIPrefab.ContainsKey(content))
+            if (DicUIPrefab.TryGetValue(content, out var value))
             {
-                dicUIPrefab[content].SetActive(false);
+                value.SetActive(false);
             }
             else
             {
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(content.uiPath);
                 GameObject instance = Object.Instantiate(prefab, content.traUIParent);
-                dicUIPrefab.Add(content, instance);
-                dicUIPrefab[content].SetActive(false);
+                DicUIPrefab.Add(content, instance);
+                DicUIPrefab[content].SetActive(false);
             }
         }
     }

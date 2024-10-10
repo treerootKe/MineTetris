@@ -9,7 +9,7 @@ namespace Manage
     public class LoadAssetsManager
     {
         private string assetBundlePath;
-        public IEnumerator Load<T>(string path)
+        public IEnumerator Load<T>(string path,GameObject prefab)
             where T : Object
         {
             assetBundlePath = Path.Combine(Application.streamingAssetsPath, path);
@@ -35,7 +35,7 @@ namespace Manage
                 yield return request;
 
                 // 实例化预制体  
-                GameObject prefab = request.asset as GameObject;
+                prefab = request.asset as GameObject;
                 Object.Instantiate(prefab);
                 // 实例化预制体  
                 // Instantiate(loadedAsset);  
