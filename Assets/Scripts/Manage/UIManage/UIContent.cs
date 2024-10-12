@@ -5,13 +5,13 @@ namespace Manage.UIManage
 {
     public struct UIContent
     {
-        public Transform traUIParent;
-        public string uiPath;
+        public readonly Transform TraUIParent;
+        public readonly string UIPath;
         
         public UIContent(Transform uiParent, string path)
         {
-            traUIParent = uiParent;
-            uiPath = path;
+            TraUIParent = uiParent;
+            UIPath = path;
         }
     }
 }

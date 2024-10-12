@@ -15,8 +15,8 @@ namespace Manage.UIManage
                 return;
             }
             // ʹ��AssetDatabase������Ԥ����
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(content.uiPath);
-            GameObject instance = Object.Instantiate(prefab, content.traUIParent);  
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(content.UIPath);
+            GameObject instance = Object.Instantiate(prefab, content.TraUIParent);  
             DicUIPrefab.Add(content, instance);
         }
 
@@ -28,8 +28,8 @@ namespace Manage.UIManage
             }
             else
             {
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(content.uiPath);
-                GameObject instance = Object.Instantiate(prefab, content.traUIParent);
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(content.UIPath);
+                GameObject instance = Object.Instantiate(prefab, content.TraUIParent);
                 DicUIPrefab.Add(content, instance);
                 DicUIPrefab[content].SetActive(false);
             }

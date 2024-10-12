@@ -18,20 +18,21 @@ public class AssetBundleManager : MonoBehaviour
 #endif
     }
 
-    public void Load(string path, GameObject prefab = null)
+    public IEnumerator Load(string path, GameObject prefab = null)
     {
 #if UNITY_EDITOR
         string path1 = Path.Combine("Asset", path);
         prefab = (GameObject)AssetDatabase.LoadAssetAtPath(path1, typeof(GameObject));
         prefab = Object.Instantiate(prefab);
 #else
-        StartCoroutine(LoadAssetBundle());
+        yield return LoadAssetBundle(path, prefab);
 #endif
+        yield return null;
     }
     
-    IEnumerator LoadAssetBundle()  
+    IEnumerator LoadAssetBundle(string path, GameObject prefab)  
     {  
-        string assetBundlePath = Path.Combine(Application.streamingAssetsPath, "tetris");
+        string assetBundlePath = Path.Combine(Application.streamingAssetsPath, path);
 #if UNITY_ANDROID
         // 对于安卓平台，UnityWebRequest从jar包中加载  
         // string uri = "jar:file://" + Application.dataPath + "!/assets/" + assetBundlePath;  
@@ -39,7 +40,6 @@ public class AssetBundleManager : MonoBehaviour
 #else
         // 对于其他平台PC、IOS.....直接从磁盘加载  
         UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(assetBundlePath);
-
 #endif
         yield return www.SendWebRequest();  
   
@@ -57,7 +57,7 @@ public class AssetBundleManager : MonoBehaviour
             yield return request;  
   
             // 实例化预制体  
-            GameObject prefab = request.asset as GameObject;  
+            prefab = request.asset as GameObject;  
             Instantiate(prefab);  
             // 实例化预制体  
             // Instantiate(loadedAsset);  
