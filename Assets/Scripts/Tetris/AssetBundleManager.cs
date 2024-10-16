@@ -10,12 +10,6 @@ public class AssetBundleManager : MonoBehaviour
 {
     void Start()
     {
-#if UNITY_EDITOR
-        GameObject prefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Tetris Assets/Prefabs/MainTetris.prefab", typeof(GameObject));
-        Object.Instantiate(prefab);
-#else
-        StartCoroutine(LoadAssetBundle());
-#endif
     }
 
     public IEnumerator Load(string path, GameObject prefab = null)
@@ -45,7 +39,7 @@ public class AssetBundleManager : MonoBehaviour
   
         if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)  
         {  
-            Debug.LogError(www.error);  
+            Debug.LogError("Prefab loading failed:" + www.error);  
         }  
         else  
         {  

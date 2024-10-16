@@ -28,10 +28,10 @@ namespace Manage.UIManage
             }
             else
             {
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(content.UIPath);
-                GameObject instance = Object.Instantiate(prefab, content.TraUIParent);
-                DicUIPrefab.Add(content, instance);
-                DicUIPrefab[content].SetActive(false);
+                // GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(content.UIPath);
+                // GameObject instance = Object.Instantiate(prefab, content.TraUIParent);
+                // DicUIPrefab.Add(content, instance);
+                // DicUIPrefab[content].SetActive(false);
             }
         }
     }
