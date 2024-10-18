@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -8,8 +8,8 @@ namespace Manage
 {
     public class LoadAssetsManager
     {
-        private string assetBundlePath;
-        public IEnumerator Load<T>(string path,GameObject prefab)
+        private static string assetBundlePath;
+        public static IEnumerator Load<T>(string path,GameObject prefab)
             where T : Object
         {
             assetBundlePath = Path.Combine(Application.streamingAssetsPath, path);

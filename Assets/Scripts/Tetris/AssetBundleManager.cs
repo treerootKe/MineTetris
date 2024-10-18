@@ -1,65 +1,69 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using System.IO;
-using UnityEngine.UI;
+using System.Text;
+using Common;
+using Manage.LoadAssetsManage;
 using UnityEditor;
 using UnityEngine.Networking;
+using Object = UnityEngine.Object;
 
-
-public class AssetBundleManager : MonoBehaviour
+namespace Tetris
 {
-    void Start()
+    public class AssetBundleManager<T> where T : Object
     {
-    }
+        private static string assetName;
 
-    public IEnumerator Load(string path, GameObject prefab = null)
-    {
+        public static IEnumerator LoadAsset(AssetContent content,Action<AssetContent, T> callback)
+        {
+            assetName = Path.GetFileName(content.StrPath);
 #if UNITY_EDITOR
-        string path1 = Path.Combine("Asset", path);
-        prefab = (GameObject)AssetDatabase.LoadAssetAtPath(path1, typeof(GameObject));
-        prefab = Object.Instantiate(prefab);
+            string path1 = new StringBuilder("Assets/HotUpdateResources/").Append(PlayerData.gamesName.ToString()).Append("/").Append(content.StrType).Append("/").Append(content.StrPath).ToString();
+            Debug.Log("路径：" + path1);
+            T asset = (T)AssetDatabase.LoadAssetAtPath(path1, typeof(T));
+            callback(content, asset);
 #else
-        yield return LoadAssetBundle(path, prefab);
+            yield return LoadAssetBundle(content, callback);
 #endif
-        yield return null;
-    }
-    
-    IEnumerator LoadAssetBundle(string path, GameObject prefab)  
-    {  
-        string assetBundlePath = Path.Combine(Application.streamingAssetsPath, path);
+            yield return null;
+        }
+
+        IEnumerator LoadAssetBundle(AssetContent content,Action<AssetContent, T> callback)
+        {
+            string assetBundleName;
+            string assetPath = content.StrType.Replace("_", "/");
+            string streamingAssetsPath = Application.streamingAssetsPath;
 #if UNITY_ANDROID
         // 对于安卓平台，UnityWebRequest从jar包中加载  
-        // string uri = "jar:file://" + Application.dataPath + "!/assets/" + assetBundlePath;  
-        UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(assetBundlePath);  
-#else
-        // 对于其他平台PC、IOS.....直接从磁盘加载  
-        UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(assetBundlePath);
+//         assetBundleName = Path.Combine(streamingAssetsPath, "Android");
+//         string uri = "jar:file://" + Application.dataPath + "!/assets/" + assetBundleName + assetPath;
+//         UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(uri);
+// #else
+            // 对于其他平台PC、IOS.....直接从磁盘加载  
+            assetBundleName = Path.Combine(streamingAssetsPath, "StandaloneWindows64");
+            UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(assetBundleName + assetPath);
 #endif
-        yield return www.SendWebRequest();  
-  
-        if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)  
-        {  
-            Debug.LogError("Prefab loading failed:" + www.error);  
-        }  
-        else  
-        {  
-            AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);  
-  
-            // 加载预制体  
-            // Object loadedAsset = bundle.LoadAsset<GameObject>("MainTetris");  
-            AssetBundleRequest request = bundle.LoadAssetAsync<GameObject>("MainTetris");
-            yield return request;  
-  
-            // 实例化预制体  
-            prefab = request.asset as GameObject;  
-            Instantiate(prefab);  
-            // 实例化预制体  
-            // Instantiate(loadedAsset);  
-  
-            // 卸载AssetBundle  
-            bundle.Unload(false);  
-        }  
- 
-    }  
+            yield return www.SendWebRequest();
 
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("Asset loading failed:" + www.error);
+            }
+            else
+            {
+                AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);
+
+                // 从.bundle文件中加载资源
+                // Object loadedAsset = bundle.LoadAsset<GameObject>("MainTetris");  
+                AssetBundleRequest request = bundle.LoadAssetAsync<T>(assetName);
+                yield return request;
+
+                T asset = request.asset as T;
+                callback(content, asset);
+                // 卸载AssetBundle  
+                bundle.Unload(false);
+            }
+        }
+    }
 }

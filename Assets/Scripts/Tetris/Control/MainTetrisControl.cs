@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Tetris.ObjectPoolItem;
 using System.Collections.Generic;
+using Common;
 using DG.Tweening;
 using ToolClasses;
 using Tetris.Common;
@@ -20,7 +21,7 @@ namespace Tetris.Control
         RotateB
     }
 
-    public class MainTetrisControl : MonoSingleton<MainTetrisControl>
+    public  class MainTetrisControl : MonoSingleton<MainTetrisControl>
     {
         public Transform traTopPanel;//顶部面板
         public Transform traBottomPanel;//底部面板
@@ -60,6 +61,7 @@ namespace Tetris.Control
 
         private void InitValues()
         {
+            PlayerData.gamesName = GamesName.Tetris;
             TetrisCommonMembers.InitValue();
             panelAllBlock = new List<Transform>();
             for (int i = 0; i < 210; i++)

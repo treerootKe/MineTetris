@@ -1,5 +1,5 @@
 ﻿using Manage;
-using Manage.UIManage;
+using Manage.LoadAssetsManage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace Tetris.UI
             {
                 EventManager.eventChangeSoundBgmValue?.Invoke(value);
             });
-            btnClose.onClick.AddListener(() => UIManager.CloseUI(UIPath.UIChangeVolume));
+            btnClose.onClick.AddListener(() => LoadManager<GameObject>.ClosePrefab(AssetsName.ChangeVolume));
         }
 
         private void FindComponent()

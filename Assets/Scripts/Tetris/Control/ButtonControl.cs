@@ -1,5 +1,5 @@
 using DG.Tweening;
-using Manage.UIManage;
+using Manage.LoadAssetsManage;
 using System;
 using Tetris.Common;
 using DesignPattern;
@@ -58,8 +58,8 @@ namespace Tetris.Control
             btnPause.onClick.AddListener(() => TetrisEventManager.eventPauseGame?.Invoke());
             btnStart.onClick.AddListener(() => TetrisEventManager.eventStartGame?.Invoke());
             btnRestart.onClick.AddListener(() => TetrisEventManager.eventRestartGame?.Invoke());
-            btnLevel.onClick.AddListener(() => UIManager.ShowUI(UIPath.UIChooseLevel));
-            btnSetting.onClick.AddListener(() => UIManager.ShowUI(UIPath.UIChangeVolume));
+            btnLevel.onClick.AddListener(() => StartCoroutine(LoadManager<GameObject>.ShowPrefab(AssetsName.ChooseLevel)));
+            btnSetting.onClick.AddListener(() => StartCoroutine(LoadManager<GameObject>.ShowPrefab(AssetsName.ChangeVolume)));
         }
     }
 }

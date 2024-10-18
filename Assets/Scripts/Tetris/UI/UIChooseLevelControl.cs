@@ -1,5 +1,5 @@
 using System;
-using Manage.UIManage;
+using Manage.LoadAssetsManage;
 using Tetris.Manage;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,7 +25,7 @@ namespace Tetris.UI
                     }
                 });
             }
-            btnClose.onClick.AddListener(() => UIManager.CloseUI(UIPath.UIChooseLevel));
+            btnClose.onClick.AddListener(() => LoadManager<GameObject>.ClosePrefab(AssetsName.ChooseLevel));
         }
 
         private void FindComponent()
