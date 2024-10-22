@@ -15,12 +15,12 @@ namespace Manage.LoadAssetsManage
         private static readonly Dictionary<AssetContent,GameObject> DicPrefabs = new Dictionary<AssetContent, GameObject>();
         public static IEnumerator ShowPrefab(AssetContent content)
         {
-            if (DicAssets.TryGetValue(content,out var prefab))
+            if (DicAssets.ContainsKey(content))
             {
                 DicPrefabs[content]?.SetActive(true);
                 yield break;
             }
-            yield return AssetBundleManager<T>.LoadAsset(content, (contentCallback, asset) =>
+            yield return AssetBundleManager.LoadAsset<T>(content, (contentCallback, asset) =>
             {
                 DicAssets.Add(content, asset);
                 var assetPrefab = asset as GameObject;
@@ -32,7 +32,7 @@ namespace Manage.LoadAssetsManage
         
         public static void ClosePrefab(AssetContent content)
         {
-            if (DicAssets.TryGetValue(content,out var prefab))
+            if (DicAssets.ContainsKey(content))
             {
                 DicPrefabs[content].SetActive(false);
             }

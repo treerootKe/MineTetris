@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 428465608
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: tetris_prefabs_game
+      Dependencies: {}
+    Info_1:
+      Name: tetris_prefabs_ui
+      Dependencies: {}
