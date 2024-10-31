@@ -1,0 +1,27 @@
+ManifestFileVersion: 0
+CRC: 1011538311
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 2a1047fb11139afd7efe67b7af0e3f69
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 818998f6ad50b01be7500ae860b195e5
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 128
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Resources/Tetris/Font/eurof55.ttf
+- Assets/Resources/Tetris/Font/Kenpixel.ttf
+- "Assets/Resources/Tetris/Font/\u65B9\u6B63\u7C97\u5706_GBK.ttf"
+- "Assets/Resources/Tetris/Font/\u65B9\u6B63\u50CF\u7D2012.TTF"
+- Assets/Resources/Tetris/Font/Flipping Legend.ttf
+Dependencies: []

@@ -1,0 +1,24 @@
+ManifestFileVersion: 0
+CRC: 3394762343
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: e764b1cd5af92e3ef0cb1a7559189bf0
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 12da798fbf3a6c0c342cc56cb1a6efdf
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Resources/Tetris/Texture/1bit_1.png
+- Assets/Resources/Tetris/Texture/SkardFlatAtlas.png
+- Assets/Resources/Tetris/Texture/6bit.png
+- Assets/Resources/Tetris/Texture/1bit_2.png
+- Assets/Resources/Tetris/Texture/1bit.png
+- "Assets/Resources/Tetris/Texture/\u672A\u6807\u9898-5.png"
+Dependencies: []

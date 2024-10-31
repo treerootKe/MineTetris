@@ -236,6 +236,7 @@ GameObject:
   - component: {fileID: 6693311824528025047}
   - component: {fileID: 2116891416786425639}
   - component: {fileID: 6546300353242686317}
+  - component: {fileID: 3524860288545035801}
   m_Layer: 5
   m_Name: UIMenu
   m_TagString: Untagged
@@ -301,6 +302,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3524860288545035801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995583139545471293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf58354cd893417caba0c6b092ea7177, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5369227970072377196
 GameObject:
   m_ObjectHideFlags: 0
@@ -757,7 +770,7 @@ GameObject:
   - component: {fileID: 7582754264020665107}
   - component: {fileID: 2990151003794905465}
   m_Layer: 5
-  m_Name: btnEnterTetris (1)
+  m_Name: btnEnterTetris1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

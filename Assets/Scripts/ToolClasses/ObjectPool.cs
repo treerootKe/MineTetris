@@ -4,9 +4,9 @@ using UnityEngine;
 namespace ToolClasses
 {
     /// <summary>
-    /// ????????
+    /// 对象池
     /// </summary>
-    /// <typeparam name="T">????????</typeparam>
+    /// <typeparam name="T">泛型参数</typeparam>
     public class ObjectPool<T>where T : Component
     {
         private readonly T _mInitObject;

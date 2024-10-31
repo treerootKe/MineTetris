@@ -8,7 +8,7 @@ namespace DesignPattern
     {
         private static T _instance;
 
-        public static T Instance => _instance;
+        protected static T Instance => _instance;
         protected virtual void Awake()
         {
             _instance = transform.GetComponent<T>();

@@ -1,21 +1,15 @@
 ManifestFileVersion: 0
-CRC: 160723946
+CRC: 1229117247
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c01bb046db42c407fd5317d58811e571
+    Hash: c081bdd4f7092d036752ba6a3dbadd89
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 513cc2e3bb49b964b8a452e6734bf818
+    Hash: 1f8a5e4a79e906c4d214ecb9cc32305d
 HashAppended: 0
 ClassTypes:
 - Class: 1
-  Script: {instanceID: 0}
-- Class: 21
-  Script: {instanceID: 0}
-- Class: 28
-  Script: {instanceID: 0}
-- Class: 48
   Script: {instanceID: 0}
 - Class: 114
   Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
@@ -64,4 +58,6 @@ SerializeReferenceClassIdentifiers:
   ClassName: UnityEngine.UI.SpriteState
 Assets:
 - Assets/HotUpdateResources/Tetris/Prefabs/Game/UIMainTetris.prefab
-Dependencies: []
+Dependencies:
+- E:/GitTest/MineTetris/Assets/StreamingAssetsAndroid/images
+- E:/GitTest/MineTetris/Assets/StreamingAssetsAndroid/tetris_fnt

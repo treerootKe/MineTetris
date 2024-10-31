@@ -1,0 +1,21 @@
+ManifestFileVersion: 0
+CRC: 4104225100
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 71fa389a25f69cefdbb427948e58fb98
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9a2ca7bdbd1871f7131daf57de908e0c
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Resources/Tetris/Audio/Drop.wav
+- Assets/Resources/Tetris/Audio/Disappear.wav
+- Assets/Resources/Tetris/Audio/Bgm.wav
+- Assets/Resources/Tetris/Audio/Rotate.wav
+- Assets/Resources/Tetris/Audio/MoveX.wav
+Dependencies: []

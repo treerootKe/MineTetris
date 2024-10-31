@@ -1,21 +1,17 @@
 ManifestFileVersion: 0
-CRC: 809302216
+CRC: 520507081
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: fd0883bad9a2fc44eaef285d69e100b1
+    Hash: be0e252ed6cafc7ce2b1c7aeffae8f32
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 2b08a288faed1798ef70ceceb00e96ae
+    Hash: 785e6d8a07ed85a7e811d2c9e5f443bf
 HashAppended: 0
 ClassTypes:
 - Class: 1
   Script: {instanceID: 0}
-- Class: 21
-  Script: {instanceID: 0}
 - Class: 28
-  Script: {instanceID: 0}
-- Class: 48
   Script: {instanceID: 0}
 - Class: 114
   Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
@@ -74,4 +70,6 @@ Assets:
 - Assets/HotUpdateResources/Tetris/Prefabs/UI/UIMenu.prefab
 - Assets/HotUpdateResources/Tetris/Prefabs/UI/UIChangeVolume.prefab
 - Assets/HotUpdateResources/Tetris/Prefabs/UI/UIChooseLevel.prefab
-Dependencies: []
+Dependencies:
+- E:/GitTest/MineTetris/Assets/StreamingAssetsAndroid/images
+- E:/GitTest/MineTetris/Assets/StreamingAssetsAndroid/tetris_fnt

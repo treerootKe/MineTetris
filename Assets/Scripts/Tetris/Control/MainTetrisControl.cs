@@ -61,7 +61,6 @@ namespace Tetris.Control
 
         private void InitValues()
         {
-            PlayerData.gamesName = GamesName.Tetris;
             TetrisCommonMembers.InitValue();
             panelAllBlock = new List<Transform>();
             for (int i = 0; i < 210; i++)

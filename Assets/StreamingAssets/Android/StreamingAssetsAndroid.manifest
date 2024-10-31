@@ -1,10 +1,23 @@
 ManifestFileVersion: 0
-CRC: 3165032967
+CRC: 779631560
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
       Name: tetris_prefabs_game
-      Dependencies: {}
+      Dependencies:
+        Dependency_0: tetris_fnt
+        Dependency_1: images
     Info_1:
       Name: tetris_prefabs_ui
+      Dependencies:
+        Dependency_0: tetris_fnt
+        Dependency_1: images
+    Info_2:
+      Name: tetris_audioclip
+      Dependencies: {}
+    Info_3:
+      Name: tetris_fnt
+      Dependencies: {}
+    Info_4:
+      Name: images
       Dependencies: {}
