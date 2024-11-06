@@ -7,10 +7,10 @@ namespace Tetris.ObjectPoolItem
 {
     public class ItemShape: MonoBehaviour
     {
-        public int shapeType;                           //形状的类型
-        public int shapeIndex;                          //形状当前变换的位置
-        public int[] posFourBlock;                      //方块在整个下落区域的位置集合
-        public Transform[] traFourBlock;                //形状内部的四个方块
+        public int shapeType;                           //形状的类型(7种方块)
+        public int shapeIndex;                          //形状当前变换的位置(每个形状都有4个状态)
+        public int[] posFourBlock;                      //4个方块在整个下落区域的位置集合
+        public Transform[] traFourBlock;                //形状内部的4个方块
         private List<Vector2[]> _mBlockRotateInsidePos; //形状改变后，方块在内部位置坐标集合
         private void Awake()
         {
@@ -20,7 +20,7 @@ namespace Tetris.ObjectPoolItem
         }
         private void OnEnable()
         {
-            transform.localPosition = (shapeType == 6 ? new Vector2(180, 810) : new Vector2(135, 765));
+            transform.localPosition = shapeType == 6 ? new Vector2(180, 810) : new Vector2(135, 765);
             for (int i = 0; i < traFourBlock.Length; i++)
             {
                 traFourBlock[i] = TetrisCommonMembers.blockPool.Get(transform);
@@ -94,7 +94,7 @@ namespace Tetris.ObjectPoolItem
                     return false;
                 }
                 nextBlockPos[i] = direction == ShapeChange.Left ? posFourBlock[i] - 1 : posFourBlock[i] + 1;
-                if (allPos[nextBlockPos[i]] != null)
+                if (allPos[nextBlockPos[i]])
                 {
                     return false;
                 }

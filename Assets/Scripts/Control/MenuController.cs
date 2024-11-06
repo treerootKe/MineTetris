@@ -29,13 +29,13 @@ namespace Control
             {
                 PlayerData.gamesName = GamesName.Tetris;
                 StartCoroutine(LoadManager<GameObject>.ShowPrefab(AssetsName.MainTetris));
-                this.gameObject.SetActive(false);
+                gameObject.SetActive(false);
             });
             btnEnterTetris1.onClick.AddListener(() =>
             {
                 PlayerData.gamesName = GamesName.Tetris;
                 StartCoroutine(LoadManager<GameObject>.ShowPrefab(AssetsName.MainTetris));
-                this.gameObject.SetActive(false);
+                gameObject.SetActive(false);
             });
         }
     }

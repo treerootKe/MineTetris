@@ -10,6 +10,7 @@ using DesignPattern;
 using UnityEngine.UI;
 using Tetris.Manage;
 using Control;
+using UnityEngine.InputSystem;
 
 namespace Tetris.Control
 {
@@ -159,7 +160,7 @@ namespace Tetris.Control
         }
 
         //生成一个新的形状前，初始化一下数据
-        public void OnceDropInit()
+        private void OnceDropInit()
         {
             isFastDrop = true;
             fDropInterval = fDropIntervals[nDropIntervalLevel];
@@ -395,7 +396,7 @@ namespace Tetris.Control
         }
 
 
-        public void EventPauseGame()
+        private void EventPauseGame()
         {
             isPausing = true;
             traTopPanel.gameObject.SetActive(false);
@@ -403,7 +404,7 @@ namespace Tetris.Control
             traBottomPanel.gameObject.SetActive(true);
         }
 
-        public void EventStartGame()
+        private void EventStartGame()
         {
             isPausing = false;
             traTopPanel.gameObject.SetActive(true);
@@ -418,7 +419,9 @@ namespace Tetris.Control
                 TetrisEventManager.eventRestartGame?.Invoke();
             }
         }
-        public void EventRestartGame()
+
+        //重新开始游戏
+        private void EventRestartGame()
         {
             StopCoroutine(_mIEBlockDrop);
             globalItemShape.RecycleBlock();
@@ -443,6 +446,7 @@ namespace Tetris.Control
             panelAllShape.Clear();
             OnceDropInit();
         }
+
+        #endregion
     }
-    #endregion
 }
