@@ -7,12 +7,12 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "7a1a8200-5c10-4d87-be98-0098e136a5d0",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Jump",
@@ -20,7 +20,7 @@
                     "id": "2ab393d6-bcda-4e25-81e5-065b83863466",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Hold(duration=0.1,pressPoint=0.35)",
                     "initialStateCheck": false
                 },
                 {
