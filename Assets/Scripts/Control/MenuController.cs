@@ -1,7 +1,11 @@
 using System;
+using System.Linq;
 using Common;
 using Manage.LoadAssetsManage;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem.Utilities;
 using UnityEngine.UI;
 
 namespace Control
@@ -10,7 +14,6 @@ namespace Control
     {
         private Button btnEnterTetris;
         private Button btnEnterTetris1;
-
         private void Awake()
         {
             FindComponents();
