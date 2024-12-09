@@ -8,7 +8,13 @@ namespace HollowKnight.Control
 {
     public class CharacterController : MonoBehaviour
     {
-        private const float MoveSpeed = 3f;
+        private static readonly int Grounded = Animator.StringToHash("Grounded");
+        private static readonly int Movement = Animator.StringToHash("Movement");
+        private static readonly int Jump = Animator.StringToHash("Jump");
+        private static readonly int DoubleJump = Animator.StringToHash("DoubleJump");
+
+        private const float MoveSpeed = 5f;
+        private const float DashSpeed = 8f;
         private const float JumpPower = 5f;
         private const float NormalGravityScale = 0.5f;
         private const float SlideGravityScale = 1f;
@@ -30,7 +36,8 @@ namespace HollowKnight.Control
         }
 
         private Rigidbody2D rigidbodyCharacter;
-
+        private Animator animatorCharacter;
+        
         private void Awake()
         {
             FindComponents();
@@ -38,16 +45,16 @@ namespace HollowKnight.Control
 
         private void OnEnable()
         {
-            PlayerInputAssets.PlayerInputMap.Move.performed += context => _movement = context.ReadValue<Vector2>();
-            // PlayerInputAssets.PlayerInputMap.Move.canceled += context => _movement = new Vector2(0, _movement.y);
-            PlayerInputAssets.PlayerInputMap.Jump.started += Jump;
+            PlayerInputAssets.PlayerInputMap.Move.performed += CallBackMove;
+            PlayerInputAssets.PlayerInputMap.Jump.started += CallBackJump;
             PlayerInputAssets.PlayerInputMap.Jump.performed += CancelJump;
             playerInputAssets.PlayerInputMap.Jump.canceled += CancelJump;
         }
 
         private void OnDisable()
         {
-            PlayerInputAssets.PlayerInputMap.Jump.started -= Jump;
+            playerInputAssets.PlayerInputMap.Move.performed -= CallBackMove;
+            PlayerInputAssets.PlayerInputMap.Jump.started -= CallBackJump;
             PlayerInputAssets.PlayerInputMap.Jump.performed -= CancelJump;
             playerInputAssets.PlayerInputMap.Jump.canceled -= CancelJump;
             playerInputAssets.Disable();
@@ -58,16 +65,37 @@ namespace HollowKnight.Control
             PlayerInputAssets = new PlayerInputAssets();
             PlayerInputAssets.Enable();
             rigidbodyCharacter = GetComponent<Rigidbody2D>();
+            animatorCharacter = GetComponent<Animator>();
         }
         
-
-        private void Jump(InputAction.CallbackContext contextCallback)
+        private void CallBackMove(InputAction.CallbackContext context)
+        {
+            _movement = context.ReadValue<Vector2>();
+            if (_movement.x == 0)
+            {
+                rigidbodyCharacter.velocity = new Vector2(0.4f, rigidbodyCharacter.velocity.y);
+            }
+        }
+        
+        private void CallBackJump(InputAction.CallbackContext contextCallback)
         {
             if (_nJumpCount >= 2)
             {
                 return;
             }
             _nJumpCount++;
+            if (_nJumpCount == 2)
+            {
+                _nJumpCount++;
+                animatorCharacter.SetTrigger(DoubleJump);
+                rigidbodyCharacter.velocity = new Vector2(rigidbodyCharacter.velocity.x, 0);
+            }
+            else
+            {
+                animatorCharacter.SetTrigger(Jump);
+            }
+
+            animatorCharacter.SetBool(Grounded, false);
             _isCanJump = true;
         }
 
@@ -92,24 +120,22 @@ namespace HollowKnight.Control
         {
             if (_movement.x == 0)
             {
+                animatorCharacter.SetInteger(Movement, 0);
                 return;
             }
+            animatorCharacter.SetInteger(Movement,1);
             rigidbodyCharacter.velocity = new Vector2(MoveSpeed * _movement.x, rigidbodyCharacter.velocity.y);
         }
         
         private void UpdateJump()
         {
+            Debug.Log("y轴方向的速度" + rigidbodyCharacter.velocity.y);
             if (!_isCanJump)
             {
                 return;
             }
             _isJumping = true;
             
-            if (_nJumpCount == 2)
-            {
-                _nJumpCount++;
-                rigidbodyCharacter.velocity = new Vector2(rigidbodyCharacter.velocity.x, 0);
-            }
             rigidbodyCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
         }
 
@@ -133,9 +159,13 @@ namespace HollowKnight.Control
         }
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            _isCanJump = false;
-            _isJumping = false;
-            _nJumpCount = 0;
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                animatorCharacter.SetBool(Grounded, true);
+                _isCanJump = false;
+                _isJumping = false;
+                _nJumpCount = 0;
+            }
         }
     }
 }
