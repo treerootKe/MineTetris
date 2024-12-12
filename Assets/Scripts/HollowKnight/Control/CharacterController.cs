@@ -12,10 +12,14 @@ namespace HollowKnight.Control
         private static readonly int Movement = Animator.StringToHash("Movement");
         private static readonly int Jump = Animator.StringToHash("Jump");
         private static readonly int DoubleJump = Animator.StringToHash("DoubleJump");
+        private static readonly int Sliding = Animator.StringToHash("Sliding");
+        private static readonly int SlideJump = Animator.StringToHash("SlideJump");
 
         private const float MoveSpeed = 5f;
         private const float DashSpeed = 8f;
         private const float JumpPower = 5f;
+        private const float SlideJumpPower = 15f;
+        private const float SlideJumpPowerX = 2f;
         private const float NormalGravityScale = 0.5f;
         private const float SlideGravityScale = 1f;
         private const float JumpGravityScale = 5f;
@@ -23,10 +27,26 @@ namespace HollowKnight.Control
         
         private Vector2 _movement;
         private int _nJumpCount;
+        private int _nDirection;
         
         private bool _isJumping;
         private bool _isCanJump;
         private bool _isSliding;
+
+        private Transform _transWallDetect;
+        private Transform _transGroundDetect;
+
+        private float VelocityX
+        {
+            get => rigidbodyCharacter.velocity.x;
+            set => rigidbodyCharacter.velocity = new Vector2(value, VelocityY);
+        }
+
+        private float VelocityY
+        {
+            get => rigidbodyCharacter.velocity.y;
+            set => rigidbodyCharacter.velocity = new Vector2(VelocityX, value);
+        }
 
         private PlayerInputAssets playerInputAssets;
         private PlayerInputAssets PlayerInputAssets
@@ -36,7 +56,7 @@ namespace HollowKnight.Control
         }
 
         private Rigidbody2D rigidbodyCharacter;
-        private Animator animatorCharacter;
+        private Animator _animatorCharacter;
         
         private void Awake()
         {
@@ -47,25 +67,27 @@ namespace HollowKnight.Control
         {
             PlayerInputAssets.PlayerInputMap.Move.performed += CallBackMove;
             PlayerInputAssets.PlayerInputMap.Jump.started += CallBackJump;
-            PlayerInputAssets.PlayerInputMap.Jump.performed += CancelJump;
-            playerInputAssets.PlayerInputMap.Jump.canceled += CancelJump;
+            PlayerInputAssets.PlayerInputMap.Jump.performed += CallbackCancelJump;
+            playerInputAssets.PlayerInputMap.Jump.canceled += CallbackCancelJump;
         }
 
         private void OnDisable()
         {
             playerInputAssets.PlayerInputMap.Move.performed -= CallBackMove;
             PlayerInputAssets.PlayerInputMap.Jump.started -= CallBackJump;
-            PlayerInputAssets.PlayerInputMap.Jump.performed -= CancelJump;
-            playerInputAssets.PlayerInputMap.Jump.canceled -= CancelJump;
+            PlayerInputAssets.PlayerInputMap.Jump.performed -= CallbackCancelJump;
+            playerInputAssets.PlayerInputMap.Jump.canceled -= CallbackCancelJump;
             playerInputAssets.Disable();
         }
         
         private void FindComponents()
         {
+            _transWallDetect = transform.Find("Detects/WallDetect");
+            _transGroundDetect = transform.Find("Detects/GroundDetect"); 
             PlayerInputAssets = new PlayerInputAssets();
             PlayerInputAssets.Enable();
             rigidbodyCharacter = GetComponent<Rigidbody2D>();
-            animatorCharacter = GetComponent<Animator>();
+            _animatorCharacter = GetComponent<Animator>();
         }
         
         private void CallBackMove(InputAction.CallbackContext context)
@@ -73,7 +95,7 @@ namespace HollowKnight.Control
             _movement = context.ReadValue<Vector2>();
             if (_movement.x == 0)
             {
-                rigidbodyCharacter.velocity = new Vector2(0.4f, rigidbodyCharacter.velocity.y);
+                VelocityX = 0.5f * _nDirection;
             }
         }
         
@@ -87,19 +109,19 @@ namespace HollowKnight.Control
             if (_nJumpCount == 2)
             {
                 _nJumpCount++;
-                animatorCharacter.SetTrigger(DoubleJump);
-                rigidbodyCharacter.velocity = new Vector2(rigidbodyCharacter.velocity.x, 0);
+                _animatorCharacter.SetTrigger(DoubleJump);
+                VelocityY = 0;
             }
             else
             {
-                animatorCharacter.SetTrigger(Jump);
+                _animatorCharacter.SetTrigger(Jump);
             }
 
-            animatorCharacter.SetBool(Grounded, false);
+            _animatorCharacter.SetBool(Grounded, false);
             _isCanJump = true;
         }
 
-        private void CancelJump(InputAction.CallbackContext context)
+        private void CallbackCancelJump(InputAction.CallbackContext context)
         {
             _isCanJump = false;
         }
@@ -107,6 +129,7 @@ namespace HollowKnight.Control
         private void FixedUpdate()
         {
             UpdateMove();
+            UpdateDirection();
             UpdateJump();
             UpdateGravityScale();
         }
@@ -118,53 +141,104 @@ namespace HollowKnight.Control
         
         private void UpdateMove()
         {
+            if (_isSliding)
+            {
+                if (Mathf.Approximately(_movement.x, _nDirection))
+                {
+                    return;
+                }
+            }
             if (_movement.x == 0)
             {
-                animatorCharacter.SetInteger(Movement, 0);
+                _animatorCharacter.SetInteger(Movement, 0);
                 return;
             }
-            animatorCharacter.SetInteger(Movement,1);
-            rigidbodyCharacter.velocity = new Vector2(MoveSpeed * _movement.x, rigidbodyCharacter.velocity.y);
+            _animatorCharacter.SetInteger(Movement,1);
+            VelocityX = MoveSpeed * _movement.x;
+        }
+
+        private void UpdateDirection()
+        {
+            if (VelocityX < 0)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+                _nDirection = -1;
+            }
+
+            if (VelocityX > 0)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+                _nDirection = 1;
+            }
         }
         
         private void UpdateJump()
         {
-            Debug.Log("y轴方向的速度" + rigidbodyCharacter.velocity.y);
             if (!_isCanJump)
             {
                 return;
             }
+
             _isJumping = true;
-            
+
+            if (_isSliding)
+            {
+                _isSliding = false;
+                _animatorCharacter.SetTrigger(SlideJump);
+                _animatorCharacter.SetBool(Sliding,false);
+                VelocityY = 0;
+                VelocityX = SlideJumpPowerX * -_nDirection;
+                rigidbodyCharacter.AddForce(Vector2.up * SlideJumpPower, ForceMode2D.Impulse);
+                return;
+            }
             rigidbodyCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
+            
         }
 
         private void UpdateGravityScale()
         {
             var gravityScale = NormalGravityScale;
-
-            if (_isJumping)
+            
+            if (_isSliding)
             {
-                if (_isSliding && _movement.x != 0)
-                {
-                    gravityScale = SlideGravityScale;
-                }
-                else
-                {
-                    gravityScale = rigidbodyCharacter.velocity.y > 0.0f ? JumpGravityScale : FallingGravityScale;
-                }
+                gravityScale = SlideGravityScale;
+            }
+            else
+            {
+                gravityScale = VelocityY > 0.0f ? JumpGravityScale : FallingGravityScale;
             }
             
             rigidbodyCharacter.gravityScale = gravityScale;
         }
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            var normal = collision.contacts[0].normal;
+            if (collision.gameObject.CompareTag("Ground") && normal == Vector2.up) 
             {
-                animatorCharacter.SetBool(Grounded, true);
+                _animatorCharacter.SetBool(Grounded, true);
+                _isCanJump = false;
+                _isJumping = false;
+                _isSliding = false;
+                _nJumpCount = 0;
+            }
+
+            if (normal == Vector2.left || normal == Vector2.right)
+            {
+                _animatorCharacter.SetBool(Sliding,true);
+                VelocityY = 0;
+                _isSliding = true;
                 _isCanJump = false;
                 _isJumping = false;
                 _nJumpCount = 0;
+            }
+        }
+
+        private void OnCollisionExit2D(Collision2D collision)
+        {
+            if (_isSliding)
+            {
+                _animatorCharacter.SetBool(Sliding,false);
+                _isSliding = false;
             }
         }
     }
