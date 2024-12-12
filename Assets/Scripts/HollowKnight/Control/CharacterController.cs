@@ -8,7 +8,7 @@ namespace HollowKnight.Control
 {
     public class CharacterController : MonoBehaviour
     {
-        private const float MoveSpeed = 3f;
+        private const float MoveSpeed = 4f;
         private const float JumpPower = 5f;
         private const float NormalGravityScale = 0.5f;
         private const float SlideGravityScale = 1f;
@@ -29,8 +29,9 @@ namespace HollowKnight.Control
             set => playerInputAssets = value;
         }
 
-        private Rigidbody2D rigidbodyCharacter;
-
+        private Rigidbody2D _rigidBody2DCharacter;
+        private Animator _animatorCharacter;
+        
         private void Awake()
         {
             FindComponents();
@@ -57,7 +58,8 @@ namespace HollowKnight.Control
         {
             PlayerInputAssets = new PlayerInputAssets();
             PlayerInputAssets.Enable();
-            rigidbodyCharacter = GetComponent<Rigidbody2D>();
+            _rigidBody2DCharacter = GetComponent<Rigidbody2D>();
+            _animatorCharacter = GetComponent<Animator>();
         }
         
 
@@ -94,7 +96,7 @@ namespace HollowKnight.Control
             {
                 return;
             }
-            rigidbodyCharacter.velocity = new Vector2(MoveSpeed * _movement.x, rigidbodyCharacter.velocity.y);
+            _rigidBody2DCharacter.velocity = new Vector2(MoveSpeed * _movement.x, _rigidBody2DCharacter.velocity.y);
         }
         
         private void UpdateJump()
@@ -108,9 +110,9 @@ namespace HollowKnight.Control
             if (_nJumpCount == 2)
             {
                 _nJumpCount++;
-                rigidbodyCharacter.velocity = new Vector2(rigidbodyCharacter.velocity.x, 0);
+                _rigidBody2DCharacter.velocity = new Vector2(_rigidBody2DCharacter.velocity.x, 0);
             }
-            rigidbodyCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
+            _rigidBody2DCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
         }
 
         private void UpdateGravityScale()
@@ -125,11 +127,11 @@ namespace HollowKnight.Control
                 }
                 else
                 {
-                    gravityScale = rigidbodyCharacter.velocity.y > 0.0f ? JumpGravityScale : FallingGravityScale;
+                    gravityScale = _rigidBody2DCharacter.velocity.y > 0.0f ? JumpGravityScale : FallingGravityScale;
                 }
             }
             
-            rigidbodyCharacter.gravityScale = gravityScale;
+            _rigidBody2DCharacter.gravityScale = gravityScale;
         }
         private void OnCollisionEnter2D(Collision2D collision)
         {
