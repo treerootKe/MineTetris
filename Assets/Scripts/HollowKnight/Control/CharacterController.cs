@@ -18,7 +18,7 @@ namespace HollowKnight.Control
         private const float MoveSpeed = 5f;
         private const float DashSpeed = 8f;
         private const float JumpPower = 5f;
-        private const float SlideJumpPower = 15f;
+        private const float SlideJumpPower = 5f;
         private const float SlideJumpPowerX = 2f;
         private const float NormalGravityScale = 0.5f;
         private const float SlideGravityScale = 1f;
@@ -40,6 +40,7 @@ namespace HollowKnight.Control
             get => rigidbodyCharacter.velocity.x;
             set => rigidbodyCharacter.velocity = new Vector2(value, VelocityY);
         }
+
         private float VelocityY
         {
             get => rigidbodyCharacter.velocity.y;
@@ -100,9 +101,15 @@ namespace HollowKnight.Control
         {
             if (_nJumpCount >= 2)
             {
+                _isCanJump = false;
                 return;
             }
             _nJumpCount++;
+            // if (_isSliding)
+            // {
+            //     StartCoroutine(SlidingJump());
+            //     return;
+            // }
             if (_nJumpCount == 2)
             {
                 _nJumpCount++;
@@ -118,6 +125,19 @@ namespace HollowKnight.Control
             _isCanJump = true;
         }
 
+        private IEnumerator SlidingJump()
+        {
+            _isSliding = false;
+            _animatorCharacter.SetTrigger(SlideJump);
+            _animatorCharacter.SetBool(Sliding,false);
+            VelocityY = 0;
+            VelocityX = SlideJumpPowerX * -_nDirection;
+            rigidbodyCharacter.AddForce(Vector2.up * SlideJumpPower, ForceMode2D.Impulse);
+            PlayerInputAssets.PlayerInputMap.Move.Disable();
+            yield return new WaitForSeconds(0.15f);
+            PlayerInputAssets.PlayerInputMap.Move.Enable();
+        }
+        
         private void CallbackCancelJump(InputAction.CallbackContext context)
         {
             _isCanJump = false;
@@ -126,14 +146,10 @@ namespace HollowKnight.Control
         private void FixedUpdate()
         {
             UpdateMove();
+            UpdateVelocity();
             UpdateDirection();
             UpdateJump();
             UpdateGravityScale();
-        }
-
-        private void Update()
-        {
-
         }
 
         private void UpdateMove()
@@ -147,12 +163,17 @@ namespace HollowKnight.Control
             }
             if (_movement.x == 0)
             {
-                _animatorCharacter.SetInteger(Movement, 0);
                 return;
             }
-            _animatorCharacter.SetInteger(Movement,1);
             VelocityX = MoveSpeed * _movement.x;
         }
+
+
+        private void UpdateVelocity()
+        {
+            _animatorCharacter.SetInteger(Movement, VelocityX != 0 ? 1 : 0);
+        }
+
         private void UpdateDirection()
         {
             if (VelocityX < 0)
@@ -160,13 +181,14 @@ namespace HollowKnight.Control
                 transform.localScale = new Vector3(1, 1, 1);
                 _nDirection = -1;
             }
+
             if (VelocityX > 0)
             {
                 transform.localScale = new Vector3(-1, 1, 1);
                 _nDirection = 1;
             }
         }
-
+        
         private void UpdateJump()
         {
             if (!_isCanJump)
@@ -176,12 +198,7 @@ namespace HollowKnight.Control
             _isJumping = true;
             if (_isSliding)
             {
-                _isSliding = false;
-                _animatorCharacter.SetTrigger(SlideJump);
-                _animatorCharacter.SetBool(Sliding,false);
-                VelocityY = 0;
-                VelocityX = SlideJumpPowerX * -_nDirection;
-                rigidbodyCharacter.AddForce(Vector2.up * SlideJumpPower, ForceMode2D.Impulse);
+                StartCoroutine(SlidingJump());
                 return;
             }
             rigidbodyCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
