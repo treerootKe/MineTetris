@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Threading;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -116,7 +117,7 @@ namespace HollowKnight.Control
                 _animatorCharacter.SetTrigger(DoubleJump);
                 VelocityY = 0;
             }
-            else
+            else if(!_isSliding)
             {
                 _animatorCharacter.SetTrigger(Jump);
             }
@@ -171,7 +172,18 @@ namespace HollowKnight.Control
 
         private void UpdateVelocity()
         {
-            _animatorCharacter.SetInteger(Movement, VelocityX != 0 ? 1 : 0);
+            if (_isSliding)
+            {
+                DOVirtual.DelayedCall(Time.deltaTime, () =>
+                {
+                    _animatorCharacter.SetInteger(Movement, VelocityX != 0 ? 1 : 0);
+                });
+            }
+            else
+            {
+                _animatorCharacter.SetInteger(Movement, VelocityX != 0 ? 1 : 0);
+            }
+            
         }
 
         private void UpdateDirection()
@@ -233,6 +245,7 @@ namespace HollowKnight.Control
             }
             if (normal == Vector2.left || normal == Vector2.right)
             {
+                Debug.Log("速度:  " + _animatorCharacter.GetInteger(Movement));
                 _animatorCharacter.SetBool(Sliding,true);
                 VelocityY = 0;
                 _isSliding = true;
