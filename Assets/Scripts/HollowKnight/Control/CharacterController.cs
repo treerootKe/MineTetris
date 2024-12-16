@@ -19,8 +19,8 @@ namespace HollowKnight.Control
         private const float MoveSpeed = 5f;
         private const float DashSpeed = 8f;
         private const float JumpPower = 5f;
-        private const float SlideJumpPower = 5f;
-        private const float SlideJumpPowerX = 2f;
+        private const float SlideJumpPower = 20f;
+        private const float SlideJumpPowerX = 4f;
         private const float NormalGravityScale = 0.5f;
         private const float SlideGravityScale = 1f;
         private const float JumpGravityScale = 5f;
@@ -36,6 +36,7 @@ namespace HollowKnight.Control
 
         private Transform _transWallDetect;
         private Transform _transGroundDetect;
+
         private float VelocityX
         {
             get => rigidbodyCharacter.velocity.x;
@@ -47,7 +48,9 @@ namespace HollowKnight.Control
             get => rigidbodyCharacter.velocity.y;
             set => rigidbodyCharacter.velocity = new Vector2(VelocityX, value);
         }
+
         private PlayerInputAssets playerInputAssets;
+
         private PlayerInputAssets PlayerInputAssets
         {
             get { return playerInputAssets ??= new PlayerInputAssets(); }
@@ -82,7 +85,7 @@ namespace HollowKnight.Control
         private void FindComponents()
         {
             _transWallDetect = transform.Find("Detects/WallDetect");
-            _transGroundDetect = transform.Find("Detects/GroundDetect"); 
+            _transGroundDetect = transform.Find("Detects/GroundDetect");
             PlayerInputAssets = new PlayerInputAssets();
             PlayerInputAssets.Enable();
             rigidbodyCharacter = GetComponent<Rigidbody2D>();
@@ -92,8 +95,9 @@ namespace HollowKnight.Control
         private void CallBackMove(InputAction.CallbackContext context)
         {
             _movement = context.ReadValue<Vector2>();
-            if (_movement.x == 0)
+            if (_movement.x == 0 && !_isSliding)
             {
+                //惯性移动
                 VelocityX = 0.5f * _nDirection;
             }
         }
@@ -105,19 +109,21 @@ namespace HollowKnight.Control
                 _isCanJump = false;
                 return;
             }
+
             _nJumpCount++;
-            // if (_isSliding)
-            // {
-            //     StartCoroutine(SlidingJump());
-            //     return;
-            // }
+            if (_isSliding)
+            {
+                StartCoroutine(SlidingJump());
+                return;
+            }
+
             if (_nJumpCount == 2)
             {
                 _nJumpCount++;
                 _animatorCharacter.SetTrigger(DoubleJump);
                 VelocityY = 0;
             }
-            else if(!_isSliding)
+            else if (!_isSliding)
             {
                 _animatorCharacter.SetTrigger(Jump);
             }
@@ -128,17 +134,17 @@ namespace HollowKnight.Control
 
         private IEnumerator SlidingJump()
         {
-            _isSliding = false;
+            // _isSliding = false;
             _animatorCharacter.SetTrigger(SlideJump);
-            _animatorCharacter.SetBool(Sliding,false);
+            // _animatorCharacter.SetBool(Sliding,false);
             VelocityY = 0;
             VelocityX = SlideJumpPowerX * -_nDirection;
             rigidbodyCharacter.AddForce(Vector2.up * SlideJumpPower, ForceMode2D.Impulse);
             PlayerInputAssets.PlayerInputMap.Move.Disable();
-            yield return new WaitForSeconds(0.15f);
+            yield return new WaitForSeconds(0.1f);
             PlayerInputAssets.PlayerInputMap.Move.Enable();
         }
-        
+
         private void CallbackCancelJump(InputAction.CallbackContext context)
         {
             _isCanJump = false;
@@ -162,10 +168,12 @@ namespace HollowKnight.Control
                     return;
                 }
             }
+
             if (_movement.x == 0)
             {
                 return;
             }
+
             VelocityX = MoveSpeed * _movement.x;
         }
 
@@ -174,16 +182,12 @@ namespace HollowKnight.Control
         {
             if (_isSliding)
             {
-                DOVirtual.DelayedCall(Time.deltaTime, () =>
-                {
-                    _animatorCharacter.SetInteger(Movement, VelocityX != 0 ? 1 : 0);
-                });
+                _animatorCharacter.SetInteger(Movement, VelocityX != 0 ? 1 : 0);
             }
             else
             {
                 _animatorCharacter.SetInteger(Movement, VelocityX != 0 ? 1 : 0);
             }
-            
         }
 
         private void UpdateDirection()
@@ -200,27 +204,22 @@ namespace HollowKnight.Control
                 _nDirection = 1;
             }
         }
-        
+
         private void UpdateJump()
         {
             if (!_isCanJump)
             {
                 return;
             }
+
             _isJumping = true;
-            if (_isSliding)
-            {
-                StartCoroutine(SlidingJump());
-                return;
-            }
             rigidbodyCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
-            
         }
 
         private void UpdateGravityScale()
         {
             var gravityScale = NormalGravityScale;
-            
+
             if (_isSliding)
             {
                 gravityScale = SlideGravityScale;
@@ -232,10 +231,11 @@ namespace HollowKnight.Control
 
             rigidbodyCharacter.gravityScale = gravityScale;
         }
+
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var normal = collision.contacts[0].normal;
-            if (collision.gameObject.CompareTag("Ground") && normal == Vector2.up) 
+            if (collision.gameObject.CompareTag("Ground") && normal == Vector2.up)
             {
                 _animatorCharacter.SetBool(Grounded, true);
                 _isCanJump = false;
@@ -243,22 +243,24 @@ namespace HollowKnight.Control
                 _isSliding = false;
                 _nJumpCount = 0;
             }
+
             if (normal == Vector2.left || normal == Vector2.right)
             {
-                Debug.Log("速度:  " + _animatorCharacter.GetInteger(Movement));
-                _animatorCharacter.SetBool(Sliding,true);
+                _animatorCharacter.SetBool(Sliding, true);
                 VelocityY = 0;
                 _isSliding = true;
                 _isCanJump = false;
                 _isJumping = false;
                 _nJumpCount = 0;
+                _movement = Vector2.zero;
             }
         }
+
         private void OnCollisionExit2D(Collision2D collision)
         {
             if (_isSliding)
             {
-                _animatorCharacter.SetBool(Sliding,false);
+                _animatorCharacter.SetBool(Sliding, false);
                 _isSliding = false;
             }
         }
