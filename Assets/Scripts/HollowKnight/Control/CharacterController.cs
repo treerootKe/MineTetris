@@ -11,11 +11,13 @@ namespace HollowKnight.Control
     {
         private static readonly int Grounded = Animator.StringToHash("Grounded");
         private static readonly int Movement = Animator.StringToHash("Movement");
+        private static readonly int SpeedY = Animator.StringToHash("SpeedY");
         private static readonly int Jump = Animator.StringToHash("Jump");
         private static readonly int DoubleJump = Animator.StringToHash("DoubleJump");
         private static readonly int Sliding = Animator.StringToHash("Sliding");
         private static readonly int SlideJump = Animator.StringToHash("SlideJump");
 
+        //移动参数
         private const float MoveSpeed = 5f;
         private const float DashSpeed = 8f;
         private const float JumpPower = 5f;
@@ -72,16 +74,17 @@ namespace HollowKnight.Control
             PlayerInputAssets.PlayerInputMap.Move.performed += CallBackMove;
             PlayerInputAssets.PlayerInputMap.Jump.started += CallBackJump;
             PlayerInputAssets.PlayerInputMap.Jump.performed += CallbackCancelJump;
-            playerInputAssets.PlayerInputMap.Jump.canceled += CallbackCancelJump;
+            PlayerInputAssets.PlayerInputMap.Jump.canceled += CallbackCancelJump;
+            PlayerInputAssets.Enable();
         }
 
         private void OnDisable()
         {
-            playerInputAssets.PlayerInputMap.Move.performed -= CallBackMove;
+            PlayerInputAssets.PlayerInputMap.Move.performed -= CallBackMove;
             PlayerInputAssets.PlayerInputMap.Jump.started -= CallBackJump;
             PlayerInputAssets.PlayerInputMap.Jump.performed -= CallbackCancelJump;
-            playerInputAssets.PlayerInputMap.Jump.canceled -= CallbackCancelJump;
-            playerInputAssets.Disable();
+            PlayerInputAssets.PlayerInputMap.Jump.canceled -= CallbackCancelJump;
+            PlayerInputAssets.Disable();
         }
 
         private void FindComponents()
@@ -89,7 +92,6 @@ namespace HollowKnight.Control
             _transWallDetect = transform.Find("Detects/WallDetect");
             _transGroundDetect = transform.Find("Detects/GroundDetect");
             PlayerInputAssets = new PlayerInputAssets();
-            PlayerInputAssets.Enable();
             rigidbodyCharacter = GetComponent<Rigidbody2D>();
             _animatorCharacter = GetComponent<Animator>();
         }
@@ -144,7 +146,7 @@ namespace HollowKnight.Control
         private void FixedUpdate()
         {
             UpdateMove();
-            UpdateVelocity();
+            UpdateMovement();
             UpdateDirection();
             UpdateJump();
             UpdateGravityScale();
@@ -169,7 +171,7 @@ namespace HollowKnight.Control
         }
 
 
-        private void UpdateVelocity()
+        private void UpdateMovement()
         {
             if (_isSliding)
             {
@@ -218,7 +220,7 @@ namespace HollowKnight.Control
 
         private void UpdateGravityScale()
         {
-            var gravityScale = NormalGravityScale;
+            float gravityScale;
 
             if (_isSliding)
             {
@@ -227,6 +229,7 @@ namespace HollowKnight.Control
             else
             {
                 gravityScale = VelocityY > 0.0f ? JumpGravityScale : FallingGravityScale;
+                _animatorCharacter.SetFloat(SpeedY, VelocityY);
             }
 
             rigidbodyCharacter.gravityScale = gravityScale;
@@ -239,6 +242,7 @@ namespace HollowKnight.Control
             {
                 _isGrounded = true;
                 _animatorCharacter.SetBool(Grounded, true);
+                _animatorCharacter.SetBool(Sliding, false);
                 _isCanJump = false;
                 _isJumping = false;
                 _isSlideJumping = false;
@@ -264,6 +268,12 @@ namespace HollowKnight.Control
             {
                 _animatorCharacter.SetBool(Sliding, false);
                 _isSliding = false;
+                return;
+            }
+
+            if (_isGrounded)
+            {
+                _animatorCharacter.SetBool(Grounded, false);
             }
         }
     }
