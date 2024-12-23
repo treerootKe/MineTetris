@@ -4,6 +4,7 @@ using System.Threading;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 namespace HollowKnight.Control
 {
@@ -16,7 +17,7 @@ namespace HollowKnight.Control
         private static readonly int DoubleJump = Animator.StringToHash("DoubleJump");
         private static readonly int Sliding = Animator.StringToHash("Sliding");
         private static readonly int SlideJump = Animator.StringToHash("SlideJump");
-
+        
         //移动参数
         private const float MoveSpeed = 5f;
         private const float DashSpeed = 8f;
@@ -28,16 +29,21 @@ namespace HollowKnight.Control
         private const float JumpGravityScale = 5f;
         private const float FallingGravityScale = 7f;
 
+        //战斗参数
+        private int _nSlashType;
+        private float lastSlashTime;
+        private const float SlashInterval = 0.2f;
+        
         private Vector2 _movement;
         private int _nJumpCount;
         private int _nDirection;
-
-        private bool _isJumping;
-        private bool _isSlideJumping;
-        private bool _isCanJump;
+        
         private bool _isGrounded;
+        private bool _isCanJump;
+        private bool _isJumping;
         private bool _isSliding;
-
+        private bool _isSlideJumping;
+        
         private Transform _transWallDetect;
         private Transform _transGroundDetect;
 
@@ -67,6 +73,7 @@ namespace HollowKnight.Control
         private void Awake()
         {
             FindComponents();
+            lastSlashTime = Time.time;
         }
 
         private void OnEnable()
@@ -75,6 +82,7 @@ namespace HollowKnight.Control
             PlayerInputAssets.PlayerInputMap.Jump.started += CallBackJump;
             PlayerInputAssets.PlayerInputMap.Jump.performed += CallbackCancelJump;
             PlayerInputAssets.PlayerInputMap.Jump.canceled += CallbackCancelJump;
+            PlayerInputAssets.PlayerInputMap.Attack.started += CallbackAttack;
             PlayerInputAssets.Enable();
         }
 
@@ -84,6 +92,7 @@ namespace HollowKnight.Control
             PlayerInputAssets.PlayerInputMap.Jump.started -= CallBackJump;
             PlayerInputAssets.PlayerInputMap.Jump.performed -= CallbackCancelJump;
             PlayerInputAssets.PlayerInputMap.Jump.canceled -= CallbackCancelJump;
+            PlayerInputAssets.PlayerInputMap.Attack.started -= CallbackAttack;
             PlayerInputAssets.Disable();
         }
 
@@ -142,6 +151,29 @@ namespace HollowKnight.Control
         {
             _isCanJump = false;
         }
+
+        private void CallbackAttack(InputAction.CallbackContext context)
+        {
+            if (_isCanJump || Time.time - lastSlashTime < SlashInterval)
+            {
+                return;
+            }
+            lastSlashTime = Time.time;
+            if (_movement.y > 0)
+            {
+                _animatorCharacter.Play("UpSlash");
+            }
+            else if (_movement.y < 0)
+            {
+                _animatorCharacter.Play("DownSlash");
+            }
+            else
+            {
+                var rangeSlash = _nSlashType++ % 2;
+                _animatorCharacter.Play($"Slash{rangeSlash}");
+            }
+        }
+        
 
         private void FixedUpdate()
         {

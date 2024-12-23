@@ -786,7 +786,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AltSlash
+  m_Name: Slash1
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -973,7 +973,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 8826543107018495905}
-    m_Position: {x: 422.89716, y: 79.462616, z: 0}
+    m_Position: {x: 420, y: 80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2625536978005553377}
     m_Position: {x: 420, y: 150, z: 0}
@@ -2748,7 +2748,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Slash
+  m_Name: Slash0
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
