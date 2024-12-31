@@ -1,14 +1,18 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
+using DesignPattern;
 using DG.Tweening;
+using HollowKnight.AbstractClass;
+using HollowKnight.EnumData;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 namespace HollowKnight.Control
 {
-    public class CharacterController : MonoBehaviour
+    public class CharacterController : MonoSingleton<CharacterController>
     {
         private static readonly int Grounded = Animator.StringToHash("Grounded");
         private static readonly int Movement = Animator.StringToHash("Movement");
@@ -30,9 +34,15 @@ namespace HollowKnight.Control
         private const float FallingGravityScale = 7f;
 
         //战斗参数
-        private int _nSlashType;
+        private int _nSlashIndex;
+        private SlashType _slashType;
         private float lastSlashTime;
         private const float SlashInterval = 0.2f;
+        
+        //玩家身上的组件
+        private Collider2D _collider2DSlash;
+        private Collider2D _collider2DUpSlash;
+        private Collider2D _collider2DDownSlash;
         
         private Vector2 _movement;
         private int _nJumpCount;
@@ -70,8 +80,9 @@ namespace HollowKnight.Control
         private Rigidbody2D rigidbodyCharacter;
         private Animator _animatorCharacter;
 
-        private void Awake()
+        protected new void Awake()
         {
+            base.Awake();
             FindComponents();
             lastSlashTime = Time.time;
         }
@@ -98,6 +109,9 @@ namespace HollowKnight.Control
 
         private void FindComponents()
         {
+            _collider2DSlash = transform.Find("Attacks/Slash").GetComponent<PolygonCollider2D>();
+            _collider2DUpSlash = transform.Find("Attacks/UpSlash").GetComponent<PolygonCollider2D>();
+            _collider2DDownSlash = transform.Find("Attacks/DownSlash").GetComponent<PolygonCollider2D>();
             _transWallDetect = transform.Find("Detects/WallDetect");
             _transGroundDetect = transform.Find("Detects/GroundDetect");
             PlayerInputAssets = new PlayerInputAssets();
@@ -154,23 +168,57 @@ namespace HollowKnight.Control
 
         private void CallbackAttack(InputAction.CallbackContext context)
         {
-            if (_isCanJump || Time.time - lastSlashTime < SlashInterval)
+            if (Time.time - lastSlashTime < SlashInterval)
             {
                 return;
             }
             lastSlashTime = Time.time;
             if (_movement.y > 0)
             {
+                _slashType = SlashType.UpSlash;
                 _animatorCharacter.Play("UpSlash");
             }
             else if (_movement.y < 0)
             {
+                _slashType = SlashType.DownSlash;
                 _animatorCharacter.Play("DownSlash");
             }
             else
             {
-                var rangeSlash = _nSlashType++ % 2;
+                _slashType = SlashType.Slash;
+                var rangeSlash = _nSlashIndex++ % 2;
                 _animatorCharacter.Play($"Slash{rangeSlash}");
+            }
+            SlashDetection(_slashType);
+        }
+        Collider2D collider2D;
+        private ContactFilter2D contactFilter;
+        private List<Collider2D> collider2Ds = new List<Collider2D>();
+        private void SlashDetection(SlashType slashType)
+        {
+            switch (slashType)
+            {
+                case SlashType.Slash:
+                    collider2D = _collider2DSlash;
+                    break;
+                case SlashType.UpSlash:
+                    collider2D = _collider2DUpSlash;
+                    break;
+                case SlashType.DownSlash: 
+                    collider2D = _collider2DDownSlash;
+                    break;
+                default:
+                    collider2D = null;
+                        break;
+            }
+            
+            Physics2D.OverlapCollider(collider2D, new ContactFilter2D(), collider2Ds);
+            foreach (var collider2D in collider2Ds)
+            {
+                if (collider2D.CompareTag("Enemy"))
+                {
+                    collider2D.GetComponent<Enemy>().Hit(2, transform.position);
+                }
             }
         }
         

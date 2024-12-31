@@ -10,7 +10,7 @@ namespace HollowKnight.TriggerDetect
         {
             if (other.CompareTag($"Enemy") || other.CompareTag($"SpecialEffect"))
             {
-                other.GetComponent<Enemy>().Hit();
+                
             }
         }
     }
