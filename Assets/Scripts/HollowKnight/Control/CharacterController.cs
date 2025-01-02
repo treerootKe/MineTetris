@@ -217,7 +217,7 @@ namespace HollowKnight.Control
             {
                 if (collider2D.CompareTag("Enemy"))
                 {
-                    collider2D.GetComponent<Enemy>().Hit(2, transform.position);
+                    collider2D.GetComponent<AbstractEnemy>().Hit(2, transform.position);
                 }
             }
         }
