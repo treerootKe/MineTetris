@@ -3,31 +3,31 @@ using UnityEngine;
 
 namespace HollowKnight.SpecialObject.Enemy
 {
-    public class MinorAbstractEnemy: AbstractClass.AbstractEnemy
+    public class MinorEnemy: AbstractClass.AbstractEnemy
     {
         private  void Awake()
         {
             Name = "minor";
             Health = 3;
             Damage = 1;
-            Animator = gameObject.GetComponent<Animator>();
-            RigidbodyMonster = transform.GetComponent<Rigidbody2D>();
+            AnimatorEnemy = gameObject.GetComponent<Animator>();
+            RigidbodyEnemy = transform.GetComponent<Rigidbody2D>();
         }
         
-        public override void Attack(Transform transPlayer)
+        public override void AttackBehaviour(Transform transPlayer)
         {
             
         }
 
-        public override void Hit(int hitDamage, Vector2 posPlayer)
+        public override void BeHit(int hitDamage, Vector2 posPlayer)
         {
             Health -= hitDamage;
             var direction = posPlayer.x - transform.position.x > 0 ? -1 : 1;
-            Animator.Play("hit");
-            RigidbodyMonster.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
+            AnimatorEnemy.Play("hit");
+            RigidbodyEnemy.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
             if (Health <= 0)
             {
-                Animator.SetBool(Dead, true);
+                AnimatorEnemy.SetBool(Dead, true);
                 StartCoroutine(Recycle());
             }
         }
