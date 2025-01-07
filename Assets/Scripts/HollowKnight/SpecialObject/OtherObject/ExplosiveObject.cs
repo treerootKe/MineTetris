@@ -1,5 +1,5 @@
 using System.Collections;
-using HollowKnight.AbstractClass;
+using HollowKnight.AbstractObject;
 using UnityEngine;
 
 namespace HollowKnight.SpecialObject.OtherObject
@@ -18,6 +18,10 @@ namespace HollowKnight.SpecialObject.OtherObject
         {
         }
 
+        public override void StopAttacking()
+        {
+        }
+        
         public override void BeHit(int hitDamage, Vector2 posPlayer)
         {
             Health -= hitDamage;

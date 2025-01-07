@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using DesignPattern;
 using DG.Tweening;
-using HollowKnight.AbstractClass;
+using HollowKnight.AbstractObject;
 using HollowKnight.EnumData;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 
 namespace HollowKnight.Control
 {
-    public class CharacterController : MonoSingleton<CharacterController>
+    public class CharacterController : MonoSingleton<CharacterController>,IObjectsMove
     {
         private static readonly int Grounded = Animator.StringToHash("Grounded");
         private static readonly int Movement = Animator.StringToHash("Movement");
@@ -44,7 +44,7 @@ namespace HollowKnight.Control
         private Collider2D _collider2DUpSlash;
         private Collider2D _collider2DDownSlash;
         
-        private Vector2 _movement;
+        private Vector2 _movementDirection;
         private int _nJumpCount;
         private int _nDirection;
         
@@ -121,7 +121,7 @@ namespace HollowKnight.Control
 
         private void CallBackMove(InputAction.CallbackContext context)
         {
-            _movement = context.ReadValue<Vector2>();
+            _movementDirection = context.ReadValue<Vector2>();
         }
 
         private void CallBackJump(InputAction.CallbackContext contextCallback)
@@ -173,12 +173,12 @@ namespace HollowKnight.Control
                 return;
             }
             lastSlashTime = Time.time;
-            if (_movement.y > 0)
+            if (_movementDirection.y > 0)
             {
                 _slashType = SlashType.UpSlash;
                 _animatorCharacter.Play("UpSlash");
             }
-            else if (_movement.y < 0)
+            else if (_movementDirection.y < 0)
             {
                 _slashType = SlashType.DownSlash;
                 _animatorCharacter.Play("DownSlash");
@@ -225,33 +225,33 @@ namespace HollowKnight.Control
 
         private void FixedUpdate()
         {
-            UpdateMove();
+            UpdateMove(MoveSpeed);
             UpdateMovement();
             UpdateDirection();
             UpdateJump();
             UpdateGravityScale();
         }
 
-        private void UpdateMove()
+        public void UpdateMove(float speed)
         {
             if (_isSliding)
             {
                 //滑墙时禁止向墙面移动
-                if (Mathf.Approximately(_movement.x, _nDirection))
+                if (Mathf.Approximately(_movementDirection.x, _nDirection))
                 {
                     return;
                 }
             }
 
-            if (_movement.x == 0 || _isSlideJumping)
+            if (_movementDirection.x == 0 || _isSlideJumping)
             {
                 return;
             }
-            VelocityX = MoveSpeed * _movement.x;
+            VelocityX = speed * _movementDirection.x;
         }
 
 
-        private void UpdateMovement()
+        public void UpdateMovement()
         {
             if (_isSliding)
             {
@@ -259,7 +259,7 @@ namespace HollowKnight.Control
             }
             else if (_isGrounded)
             {
-                _animatorCharacter.SetInteger(Movement, _movement.x != 0 ? 1 : 0);
+                _animatorCharacter.SetInteger(Movement, _movementDirection.x != 0 ? 1 : 0);
             }
             else
             {
@@ -267,7 +267,7 @@ namespace HollowKnight.Control
             }
         }
 
-        private void UpdateDirection()
+        public void UpdateDirection()
         {
             if (VelocityX < 0)
             {
@@ -282,7 +282,7 @@ namespace HollowKnight.Control
             }
         }
 
-        private void UpdateJump()
+        public void UpdateJump()
         {
             if (!_isCanJump)
             {
@@ -298,7 +298,7 @@ namespace HollowKnight.Control
             rigidbodyCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
         }
 
-        private void UpdateGravityScale()
+        public void UpdateGravityScale()
         {
             float gravityScale;
 

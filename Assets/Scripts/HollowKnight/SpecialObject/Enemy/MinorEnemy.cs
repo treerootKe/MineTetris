@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HollowKnight.SpecialObject.Enemy
 {
-    public class MinorEnemy: AbstractClass.AbstractEnemy
+    public class MinorEnemy: AbstractObject.AbstractEnemy
     {
         private  void Awake()
         {
@@ -16,20 +16,24 @@ namespace HollowKnight.SpecialObject.Enemy
         
         public override void AttackBehaviour(Transform transPlayer)
         {
-            
         }
 
+        public override void StopAttacking()
+        {
+        }
+        
         public override void BeHit(int hitDamage, Vector2 posPlayer)
         {
             Health -= hitDamage;
             var direction = posPlayer.x - transform.position.x > 0 ? -1 : 1;
             AnimatorEnemy.Play("hit");
             RigidbodyEnemy.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
-            if (Health <= 0)
+            if (Health > 0)
             {
-                AnimatorEnemy.SetBool(Dead, true);
-                StartCoroutine(Recycle());
+                return;
             }
+            AnimatorEnemy.SetBool(Dead, true);
+            StartCoroutine(Recycle());
         }
 
         private IEnumerator Recycle()

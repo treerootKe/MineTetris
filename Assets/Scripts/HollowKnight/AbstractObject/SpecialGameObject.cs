@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace HollowKnight.AbstractClass
+namespace HollowKnight.AbstractObject
 {
     public abstract class SpecialGameObject:MonoBehaviour
     {

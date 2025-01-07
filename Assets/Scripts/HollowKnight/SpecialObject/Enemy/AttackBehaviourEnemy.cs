@@ -1,6 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using HollowKnight.AbstractClass;
+using HollowKnight.AbstractObject;
 
 namespace HollowKnight.SpecialObject.Enemy
 {
@@ -11,22 +12,27 @@ namespace HollowKnight.SpecialObject.Enemy
             Name = "attack";
             Health = 3;
             Damage = 1;
-            Speed = 1.5f;
-            AttackSpeed = 3f;
+            MoveSpeed = 1.5f;
+            AttackingMoveSpeed = 3f;
             AnimatorEnemy = gameObject.GetComponent<Animator>();
             RigidbodyEnemy = transform.GetComponent<Rigidbody2D>();
-
-            Collider2DAttackRange = transform.Find("AttackRange").GetComponent<Collider2D>();
         }
 
         public override void AttackBehaviour(Transform transPlayer)
         {
-            var direction = transPlayer.position.x - transform.position.x > 0 ? 1 : -1;
-            transform.localScale = new Vector3(direction, 1, 1);
-            AnimatorEnemy.SetBool(Attack, true);
-            VelocityX = AttackSpeed * direction;
+            var directionX = transPlayer.position.x - transform.position.x > 0 ? 1 : -1;
+            var directionY = IsFly ? 0 : transPlayer.position.y - transform.position.y > 0 ? 1 : -1;
+            transform.localScale = new Vector3(directionX, 1, 1);
+            AnimatorEnemy.SetTrigger(Attack);
+            MovementDirection = new Vector2(directionX, directionY);
         }
 
+        public override void StopAttacking()
+        {
+            AnimatorEnemy.SetTrigger(Movement);
+            MovementDirection = Vector2.zero;
+        }
+        
         public override void BeHit(int hitDamage, Vector2 posPlayer)
         {
             Health -= hitDamage;
@@ -46,14 +52,12 @@ namespace HollowKnight.SpecialObject.Enemy
             Destroy(gameObject);
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void FixedUpdate()
         {
-            if (other.CompareTag("Player"))
-            {
-                AttackBehaviour(other.transform);
-            }
+            UpdateMove(MoveSpeed);
         }
-
+        
+        
         private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.CompareTag("Player"))
