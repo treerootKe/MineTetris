@@ -18,7 +18,7 @@ namespace HollowKnight.SpecialObject.Enemy
         {
         }
 
-        public override void StopAttacking()
+        public override void StopAttacking(bool isBeHit)
         {
         }
         

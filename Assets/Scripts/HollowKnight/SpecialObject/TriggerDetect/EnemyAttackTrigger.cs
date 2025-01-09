@@ -13,7 +13,7 @@ namespace HollowKnight.SpecialObject.TriggerDetect
 
         public void TriggerExitEvent(Collider2D collider2d)
         {
-            transform.parent.GetComponent<AbstractEnemy>().StopAttacking();
+            transform.parent.GetComponent<AbstractEnemy>().StopAttacking(false);
         }
         
         private void OnTriggerEnter2D(Collider2D other)

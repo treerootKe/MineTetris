@@ -7,13 +7,16 @@ namespace HollowKnight.AbstractObject
         protected static readonly int Attack = Animator.StringToHash("Attack");
         protected static readonly int Dead = Animator.StringToHash("Dead");
         protected static readonly int Movement = Animator.StringToHash("Movement");
+        protected static readonly int Hit = Animator.StringToHash("Hit");
         
         protected string Name;
         protected int Health;
         protected int Damage;
+        protected float StunDuration;
         protected float MoveSpeed;
         protected float AttackingMoveSpeed;
         protected bool IsFly;
+        protected bool IsStunned;
         
         protected Vector2 MovementDirection;
         
@@ -63,7 +66,7 @@ namespace HollowKnight.AbstractObject
         
         public abstract void AttackBehaviour(Transform transPlayer);
         
-        public abstract void StopAttacking();
+        public abstract void StopAttacking(bool isBeHit);
         
         public abstract void BeHit(int hitDamage, Vector2 posPlayer);
     }

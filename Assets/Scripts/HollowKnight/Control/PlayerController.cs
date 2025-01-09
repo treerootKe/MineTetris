@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 
 namespace HollowKnight.Control
 {
-    public class CharacterController : MonoSingleton<CharacterController>,IObjectsMove
+    public class PlayerController : MonoSingleton<PlayerController>,IObjectsMove
     {
         private static readonly int Grounded = Animator.StringToHash("Grounded");
         private static readonly int Movement = Animator.StringToHash("Movement");
