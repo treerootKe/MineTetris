@@ -18,6 +18,8 @@ namespace HollowKnight.SpecialObject.Enemy
             StunDuration = 0.25f;
             MoveSpeed = 1.5f;
             AttackingMoveSpeed = 3f;
+            MovementDirection = new Vector2(transform.localScale.x, 0);
+            Direction = (int)MovementDirection.x;
             AnimatorEnemy = gameObject.GetComponent<Animator>();
             RigidbodyEnemy = transform.GetComponent<Rigidbody2D>();
         }
@@ -34,9 +36,9 @@ namespace HollowKnight.SpecialObject.Enemy
 
         public override void StopAttacking(bool isBeHit)
         {
-            MovementDirection = Vector2.zero;
             if (isBeHit)
             {
+                MovementDirection = Vector2.zero;
                 IsStunned = true;
                 return;
             }
@@ -81,13 +83,26 @@ namespace HollowKnight.SpecialObject.Enemy
         private void FixedUpdate()
         {
             UpdateMove(speed);
+            UpdateDirection();
         }
         
         
-        private void OnCollisionEnter(Collision other)
+        private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (other.gameObject.CompareTag("Player"))
+            var normal = collision.contacts[0].normal;
+            if ((normal == Vector2.left || normal == Vector2.right))
             {
+                if (transform.localScale.x > 0 && normal.x > 0)
+                {
+                    return;
+                }
+                if (transform.localScale.x < 0 && normal.x < 0)
+                {
+                    return;
+                }
+                VelocityX = 0;
+                VelocityY = 0;
+                Direction = -Direction;
             }
         }
     }

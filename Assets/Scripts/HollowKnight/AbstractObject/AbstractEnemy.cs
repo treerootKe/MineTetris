@@ -12,6 +12,7 @@ namespace HollowKnight.AbstractObject
         protected string Name;
         protected int Health;
         protected int Damage;
+        protected int Direction;
         protected float StunDuration;
         protected float MoveSpeed;
         protected float AttackingMoveSpeed;
@@ -34,19 +35,24 @@ namespace HollowKnight.AbstractObject
             set => RigidbodyEnemy.velocity = new Vector2(VelocityX, value);
         }
 
-        public void UpdateMove(float speed)
+        public  void UpdateMove(float speed)
         {
             if (MovementDirection.x == 0 && MovementDirection.y == 0)
             {
                 return;
             }
             VelocityX = speed * MovementDirection.x;
+            if (!IsFly)
+            {
+                return;
+            }
             VelocityY = speed * MovementDirection.y;
         }
 
         public void UpdateDirection()
         {
-            
+            transform.localScale = new Vector3(Direction, 1, 1);
+            MovementDirection = new Vector2(Direction, MovementDirection.y);
         }
 
         public  void UpdateMovement()
