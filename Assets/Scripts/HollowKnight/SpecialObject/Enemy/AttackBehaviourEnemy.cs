@@ -8,81 +8,84 @@ namespace HollowKnight.SpecialObject.Enemy
 {
     public class AttackBehaviourEnemy : AbstractEnemy
     {
-        private float speed = 1.5f;
+        private float _speed = 1.5f;
         
         private void Awake()
         {
-            Name = "attack";
-            Health = 3;
-            Damage = 1;
-            StunDuration = 0.25f;
-            MoveSpeed = 1.5f;
-            AttackingMoveSpeed = 3f;
-            MovementDirection = new Vector2(transform.localScale.x, 0);
-            Direction = (int)MovementDirection.x;
-            AnimatorEnemy = gameObject.GetComponent<Animator>();
-            RigidbodyEnemy = transform.GetComponent<Rigidbody2D>();
+            itemsName = "attack";
+            health = 3;
+            damage = 1;
+            stunDuration = 0.25f;
+            moveSpeed = 1.5f;
+            attackingMoveSpeed = 3f;
+            isFly = false;
+            movementDirection = new Vector2(transform.localScale.x, 0);
+            direction = (int)movementDirection.x;
+            animatorEnemy = gameObject.GetComponent<Animator>();
+            rigidbodyEnemy = transform.GetComponent<Rigidbody2D>();
         }
 
         public override void AttackBehaviour(Transform transPlayer)
         {
-            speed = AttackingMoveSpeed;
+            _speed = attackingMoveSpeed;
             var directionX = transPlayer.position.x - transform.position.x > 0 ? 1 : -1;
-            var directionY = IsFly ? (transPlayer.position.y - transform.position.y > 0 ? 1 : -1) : 0;
+            var directionY = isFly ? (transPlayer.position.y - transform.position.y > 0 ? 1 : -1) : 0;
+            direction = directionX;
             transform.localScale = new Vector3(directionX, 1, 1);
-            AnimatorEnemy.SetTrigger(Attack);
-            MovementDirection = new Vector2(directionX, directionY);
+            animatorEnemy.SetTrigger(Attack);
+            movementDirection = new Vector2(directionX, directionY);
         }
 
         public override void StopAttacking(bool isBeHit)
         {
             if (isBeHit)
             {
-                MovementDirection = Vector2.zero;
-                IsStunned = true;
+                movementDirection = Vector2.zero;
+                isStunned = true;
                 return;
             }
-            AnimatorEnemy.SetTrigger(Movement);
-            IsStunned = false;
-            speed = MoveSpeed;
+            animatorEnemy.SetTrigger(Movement);
+            isStunned = false;
+            _speed = moveSpeed;
         }
         
         public override void BeHit(int hitDamage, Vector2 posPlayer)
         {
             StopAttacking(true);
-            Health -= hitDamage;
-            var direction = posPlayer.x - transform.position.x > 0 ? -1 : 1;
-            RigidbodyEnemy.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
-            if (Health > 0)
+            health -= hitDamage;
+            var backDirection = posPlayer.x - transform.position.x > 0 ? -1 : 1;
+            if (health > 0)
             {
-                AnimatorEnemy.SetTrigger(Hit);
+                rigidbodyEnemy.AddForce(new Vector2(backDirection * 10, 2), ForceMode2D.Impulse);
+                animatorEnemy.SetTrigger(Hit);
                 StartCoroutine(WaitStun());
                 return;
             }
-            AnimatorEnemy.SetTrigger(Dead);
+            rigidbodyEnemy.AddForce(new Vector2(backDirection * 5, 2), ForceMode2D.Impulse);
+            animatorEnemy.SetTrigger(Dead);
             StartCoroutine(Recycle());
         }
 
         private IEnumerator WaitStun()
         {
-            yield return new WaitForSeconds(StunDuration);
-            if (!IsStunned)
+            yield return new WaitForSeconds(stunDuration);
+            if (!isStunned || health <= 0)
             {
                 yield break;
             }
-            IsStunned = false;
+            isStunned = false;
             AttackBehaviour(PlayerController.Instance.transform);
         }
         
         private IEnumerator Recycle()
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1f);
             Destroy(gameObject);
         }
 
         private void FixedUpdate()
         {
-            UpdateMove(speed);
+            UpdateMove(_speed);
             UpdateDirection();
         }
         
@@ -90,19 +93,27 @@ namespace HollowKnight.SpecialObject.Enemy
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var normal = collision.contacts[0].normal;
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                
+            }
+            
             if ((normal == Vector2.left || normal == Vector2.right))
             {
                 if (transform.localScale.x > 0 && normal.x > 0)
                 {
                     return;
                 }
+
                 if (transform.localScale.x < 0 && normal.x < 0)
                 {
                     return;
                 }
-                VelocityX = 0;
-                VelocityY = 0;
-                Direction = -Direction;
+
+                // VelocityX = 0;
+                // VelocityY = 0;
+                direction = -direction;
+                movementDirection = new Vector2(direction, movementDirection.y);
             }
         }
     }

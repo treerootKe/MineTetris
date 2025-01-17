@@ -8,9 +8,9 @@ namespace HollowKnight.SpecialObject.OtherObject
     {
         private void Awake()
         {
-            Name = "attack";
-            AnimatorEnemy = gameObject.GetComponent<Animator>();
-            RigidbodyEnemy = transform.GetComponent<Rigidbody2D>();
+            itemsName = "attack";
+            animatorEnemy = gameObject.GetComponent<Animator>();
+            rigidbodyEnemy = transform.GetComponent<Rigidbody2D>();
         }
 
         
@@ -24,13 +24,13 @@ namespace HollowKnight.SpecialObject.OtherObject
         
         public override void BeHit(int hitDamage, Vector2 posPlayer)
         {
-            Health -= hitDamage;
+            health -= hitDamage;
             var direction = posPlayer.x - transform.position.x > 0 ? -1 : 1;
-            AnimatorEnemy.Play("hit");
-            RigidbodyEnemy.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
-            if (Health <= 0)
+            animatorEnemy.Play("hit");
+            rigidbodyEnemy.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
+            if (health <= 0)
             {
-                AnimatorEnemy.SetBool(Dead, true);
+                animatorEnemy.SetBool(Dead, true);
             }
         }
     }

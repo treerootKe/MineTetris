@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Common;
 using DesignPattern;
 using DG.Tweening;
 using HollowKnight.AbstractObject;
@@ -36,7 +37,7 @@ namespace HollowKnight.Control
         //战斗参数
         private int _nSlashIndex;
         private SlashType _slashType;
-        private float lastSlashTime;
+        private float _lastSlashTime;
         private const float SlashInterval = 0.2f;
         
         //玩家身上的组件
@@ -59,32 +60,32 @@ namespace HollowKnight.Control
 
         private float VelocityX
         {
-            get => rigidbodyCharacter.velocity.x;
-            set => rigidbodyCharacter.velocity = new Vector2(value, VelocityY);
+            get => _rigidbodyCharacter.velocity.x;
+            set => _rigidbodyCharacter.velocity = new Vector2(value, VelocityY);
         }
 
         private float VelocityY
         {
-            get => rigidbodyCharacter.velocity.y;
-            set => rigidbodyCharacter.velocity = new Vector2(VelocityX, value);
+            get => _rigidbodyCharacter.velocity.y;
+            set => _rigidbodyCharacter.velocity = new Vector2(VelocityX, value);
         }
 
-        private PlayerInputAssets playerInputAssets;
+        private PlayerInputAssets _playerInputAssets;
 
         private PlayerInputAssets PlayerInputAssets
         {
-            get { return playerInputAssets ??= new PlayerInputAssets(); }
-            set => playerInputAssets = value;
+            get { return _playerInputAssets ??= new PlayerInputAssets(); }
+            set => _playerInputAssets = value;
         }
 
-        private Rigidbody2D rigidbodyCharacter;
+        private Rigidbody2D _rigidbodyCharacter;
         private Animator _animatorCharacter;
 
         protected new void Awake()
         {
             base.Awake();
             FindComponents();
-            lastSlashTime = Time.time;
+            _lastSlashTime = Time.time;
         }
 
         private void OnEnable()
@@ -115,7 +116,7 @@ namespace HollowKnight.Control
             _transWallDetect = transform.Find("Detects/WallDetect");
             _transGroundDetect = transform.Find("Detects/GroundDetect");
             PlayerInputAssets = new PlayerInputAssets();
-            rigidbodyCharacter = GetComponent<Rigidbody2D>();
+            _rigidbodyCharacter = GetComponent<Rigidbody2D>();
             _animatorCharacter = GetComponent<Animator>();
         }
 
@@ -168,11 +169,11 @@ namespace HollowKnight.Control
 
         private void CallbackAttack(InputAction.CallbackContext context)
         {
-            if (Time.time - lastSlashTime < SlashInterval)
+            if (Time.time - _lastSlashTime < SlashInterval)
             {
                 return;
             }
-            lastSlashTime = Time.time;
+            _lastSlashTime = Time.time;
             if (_movementDirection.y > 0)
             {
                 _slashType = SlashType.UpSlash;
@@ -189,37 +190,47 @@ namespace HollowKnight.Control
                 var rangeSlash = _nSlashIndex++ % 2;
                 _animatorCharacter.Play($"Slash{rangeSlash}");
             }
-            SlashDetection(_slashType);
+
+            StartCoroutine(SlashDetection(_slashType));
         }
-        Collider2D collider2D;
-        private ContactFilter2D contactFilter;
-        private List<Collider2D> collider2Ds = new List<Collider2D>();
-        private void SlashDetection(SlashType slashType)
+
+        private Collider2D _collider2D;
+        private ContactFilter2D _contactFilter;
+        private readonly List<Collider2D> _collider2Ds = new List<Collider2D>();
+        
+        private IEnumerator SlashDetection(SlashType slashType)
         {
             switch (slashType)
             {
                 case SlashType.Slash:
-                    collider2D = _collider2DSlash;
+                    _collider2D = _collider2DSlash;
                     break;
                 case SlashType.UpSlash:
-                    collider2D = _collider2DUpSlash;
+                    _collider2D = _collider2DUpSlash;
                     break;
                 case SlashType.DownSlash: 
-                    collider2D = _collider2DDownSlash;
+                    _collider2D = _collider2DDownSlash;
                     break;
                 default:
-                    collider2D = null;
+                    _collider2D = null;
                         break;
             }
             
-            Physics2D.OverlapCollider(collider2D, new ContactFilter2D(), collider2Ds);
-            foreach (var collider2D in collider2Ds)
+            Physics2D.OverlapCollider(_collider2D, _contactFilter, _collider2Ds);
+            foreach (var collider2DItem in _collider2Ds)
             {
-                if (collider2D.CompareTag("Enemy"))
+                if (collider2DItem.CompareTag("Enemy"))
                 {
-                    collider2D.GetComponent<AbstractEnemy>().BeHit(2, transform.position);
+                    yield return new WaitForSeconds(0.08f);
+                    CommonMethod.CameraShake(0.25f);
+                    collider2DItem.GetComponent<AbstractEnemy>().BeHit(2, transform.position);
                 }
             }
+        }
+
+        private void BeHit()
+        {
+            
         }
         
 
@@ -295,7 +306,7 @@ namespace HollowKnight.Control
                 StartCoroutine(SlidingJump());
                 return;
             }
-            rigidbodyCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
+            _rigidbodyCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
         }
 
         public void UpdateGravityScale()
@@ -312,7 +323,7 @@ namespace HollowKnight.Control
                 _animatorCharacter.SetFloat(SpeedY, VelocityY);
             }
 
-            rigidbodyCharacter.gravityScale = gravityScale;
+            _rigidbodyCharacter.gravityScale = gravityScale;
         }
 
         private void OnCollisionEnter2D(Collision2D collision)

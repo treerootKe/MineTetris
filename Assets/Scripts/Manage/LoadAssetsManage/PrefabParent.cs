@@ -5,10 +5,10 @@ namespace Manage.LoadAssetsManage
 {
     public struct PrefabParent
     {
-        public static Transform Game => CommonCanvas.traGameCanvas;
+        public static Transform Game => CommonCanvas.TraGameCanvas;
 
-        public static Transform GameUI => CommonCanvas.traGameUICanvas;
+        public static Transform GameUI => CommonCanvas.TraGameUICanvas;
 
-        public static Transform GameMenu => CommonCanvas.traGameMenuCanvas;
+        public static Transform GameMenu => CommonCanvas.TraGameMenuCanvas;
     }
 }

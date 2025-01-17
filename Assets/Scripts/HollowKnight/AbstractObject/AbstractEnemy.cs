@@ -2,78 +2,81 @@ using UnityEngine;
 
 namespace HollowKnight.AbstractObject
 {
-    public abstract class AbstractEnemy: MonoBehaviour,IObjectsMove
+    public abstract class AbstractEnemy : MonoBehaviour, IObjectsMove
+
     {
-        protected static readonly int Attack = Animator.StringToHash("Attack");
-        protected static readonly int Dead = Animator.StringToHash("Dead");
-        protected static readonly int Movement = Animator.StringToHash("Movement");
-        protected static readonly int Hit = Animator.StringToHash("Hit");
-        
-        protected string Name;
-        protected int Health;
-        protected int Damage;
-        protected int Direction;
-        protected float StunDuration;
-        protected float MoveSpeed;
-        protected float AttackingMoveSpeed;
-        protected bool IsFly;
-        protected bool IsStunned;
-        
-        protected Vector2 MovementDirection;
-        
-        protected Animator AnimatorEnemy;
-        protected Rigidbody2D RigidbodyEnemy;
-        protected float VelocityX
+    protected static readonly int Attack = Animator.StringToHash("Attack");
+    protected static readonly int Dead = Animator.StringToHash("Dead");
+    protected static readonly int Movement = Animator.StringToHash("Movement");
+    protected static readonly int Hit = Animator.StringToHash("Hit");
+
+    protected string itemsName;
+    protected int health;
+    protected int damage;
+    protected int direction;
+    protected float stunDuration;
+    protected float moveSpeed;
+    protected float attackingMoveSpeed;
+    protected bool isFly;
+    protected bool isStunned;
+
+    protected Vector2 movementDirection;
+
+    protected Animator animatorEnemy;
+    protected Rigidbody2D rigidbodyEnemy;
+
+    protected float VelocityX
+    {
+        get => rigidbodyEnemy.velocity.x;
+        set => rigidbodyEnemy.velocity = new Vector2(value, VelocityY);
+    }
+
+    protected float VelocityY
+    {
+        get => rigidbodyEnemy.velocity.y;
+        set => rigidbodyEnemy.velocity = new Vector2(VelocityX, value);
+    }
+
+    public void UpdateMove(float speed)
+    {
+        if (movementDirection.x == 0 && movementDirection.y == 0)
         {
-            get => RigidbodyEnemy.velocity.x;
-            set => RigidbodyEnemy.velocity = new Vector2(value, VelocityY);
+            return;
         }
 
-        protected float VelocityY
+        VelocityX = speed * movementDirection.x;
+        if (!isFly)
         {
-            get => RigidbodyEnemy.velocity.y;
-            set => RigidbodyEnemy.velocity = new Vector2(VelocityX, value);
+            return;
         }
 
-        public  void UpdateMove(float speed)
-        {
-            if (MovementDirection.x == 0 && MovementDirection.y == 0)
-            {
-                return;
-            }
-            VelocityX = speed * MovementDirection.x;
-            if (!IsFly)
-            {
-                return;
-            }
-            VelocityY = speed * MovementDirection.y;
-        }
+        VelocityY = speed * movementDirection.y;
+    }
 
-        public void UpdateDirection()
-        {
-            transform.localScale = new Vector3(Direction, 1, 1);
-            MovementDirection = new Vector2(Direction, MovementDirection.y);
-        }
+    public void UpdateDirection()
+    {
+        transform.localScale = new Vector3(direction, 1, 1);
+    }
 
-        public  void UpdateMovement()
-        {
-            
-        }
+    public void UpdateMovement()
+    {
 
-        public void UpdateJump()
-        {
-            
-        }
+    }
 
-        public  void UpdateGravityScale()
-        {
-            
-        }
-        
-        public abstract void AttackBehaviour(Transform transPlayer);
-        
-        public abstract void StopAttacking(bool isBeHit);
-        
-        public abstract void BeHit(int hitDamage, Vector2 posPlayer);
+    public void UpdateJump()
+    {
+
+    }
+
+    public void UpdateGravityScale()
+    {
+
+    }
+
+    public abstract void AttackBehaviour(Transform transPlayer);
+
+    public abstract void StopAttacking(bool isBeHit);
+
+    public abstract void BeHit(int hitDamage, Vector2 posPlayer);
     }
 }
