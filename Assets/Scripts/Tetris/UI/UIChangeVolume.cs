@@ -12,29 +12,29 @@ namespace Tetris.UI
 {
     class UIChangeVolume:MonoBehaviour
     {
-        private Slider sliderSoundEffect;
-        private Slider sliderSoundBgm;
-        private Button btnClose;
+        private Slider _sliderSoundEffect;
+        private Slider _sliderSoundBgm;
+        private Button _btnClose;
         
         private void Awake()
         {
             FindComponent();
-            sliderSoundEffect.onValueChanged.AddListener(value =>
+            _sliderSoundEffect.onValueChanged.AddListener(value =>
             {
-                EventManager.eventChangeSoundEffectValue?.Invoke(value);
+                EventManager.EventChangeSoundEffectValue?.Invoke(value);
             });
-            sliderSoundBgm.onValueChanged.AddListener(value =>
+            _sliderSoundBgm.onValueChanged.AddListener(value =>
             {
-                EventManager.eventChangeSoundBgmValue?.Invoke(value);
+                EventManager.EventChangeSoundBgmValue?.Invoke(value);
             });
-            btnClose.onClick.AddListener(() => LoadManager<GameObject>.ClosePrefab(AssetsName.ChangeVolume));
+            _btnClose.onClick.AddListener(() => LoadManager<GameObject>.ClosePrefab(AssetsName.ChangeVolume));
         }
 
         private void FindComponent()
         {
-            sliderSoundEffect = transform.Find("txtSoundEffect/sliderSoundEffect").GetComponent<Slider>();
-            sliderSoundBgm = transform.Find("txtSoundBackground/sliderSoundBackground").GetComponent<Slider>();
-            btnClose = transform.Find("btnClose").GetComponent<Button>();
+            _sliderSoundEffect = transform.Find("txtSoundEffect/sliderSoundEffect").GetComponent<Slider>();
+            _sliderSoundBgm = transform.Find("txtSoundBackground/sliderSoundBackground").GetComponent<Slider>();
+            _btnClose = transform.Find("btnClose").GetComponent<Button>();
         }
     }
 }

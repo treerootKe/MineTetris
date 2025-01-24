@@ -11,7 +11,7 @@ namespace HollowKnight.SpecialObject.Enemy
             health = 3;
             damage = 1;
             animatorEnemy = gameObject.GetComponent<Animator>();
-            rigidbodyEnemy = transform.GetComponent<Rigidbody2D>();
+            rigidbodyGameObject = transform.GetComponent<Rigidbody2D>();
         }
         
         public override void AttackBehaviour(Transform transPlayer)
@@ -27,7 +27,7 @@ namespace HollowKnight.SpecialObject.Enemy
             health -= hitDamage;
             var direction = posPlayer.x - transform.position.x > 0 ? -1 : 1;
             animatorEnemy.Play("hit");
-            rigidbodyEnemy.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
+            rigidbodyGameObject.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
             if (health > 0)
             {
                 return;

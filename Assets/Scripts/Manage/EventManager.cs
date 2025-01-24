@@ -4,7 +4,7 @@ namespace Manage
 {
     class EventManager
     {
-        public static Action<float> eventChangeSoundEffectValue;
-        public static Action<float> eventChangeSoundBgmValue;
+        public static Action<float> EventChangeSoundEffectValue;
+        public static Action<float> EventChangeSoundBgmValue;
     }
 }

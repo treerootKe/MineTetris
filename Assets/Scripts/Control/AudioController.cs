@@ -43,14 +43,14 @@ namespace Control
 
         private void OnEnable()
         {
-            EventManager.eventChangeSoundEffectValue += EventChangeSoundEffectValue;
-            EventManager.eventChangeSoundBgmValue += EventChangeBgmValue;
+            EventManager.EventChangeSoundEffectValue += EventChangeSoundEffectValue;
+            EventManager.EventChangeSoundBgmValue += EventChangeBgmValue;
         }
 
         private void OnDisable()
         {
-            EventManager.eventChangeSoundEffectValue -= EventChangeSoundEffectValue;
-            EventManager.eventChangeSoundBgmValue -= EventChangeBgmValue;
+            EventManager.EventChangeSoundEffectValue -= EventChangeSoundEffectValue;
+            EventManager.EventChangeSoundBgmValue -= EventChangeBgmValue;
         }
 
         public void PlaySound(string clipName)

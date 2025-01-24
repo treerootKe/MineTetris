@@ -12,8 +12,8 @@ namespace Control
 {
     public class MenuController:MonoBehaviour
     {
-        private Button btnEnterTetris;
-        private Button btnEnterTetris1;
+        private Button _btnEnterTetris;
+        private Button _btnEnterTetris1;
         private void Awake()
         {
             FindComponents();
@@ -22,19 +22,19 @@ namespace Control
 
         private void FindComponents()
         {
-            btnEnterTetris = transform.Find("GameList/btnEnterTetris").GetComponent<Button>();
-            btnEnterTetris1= transform.Find("GameList/btnEnterTetris1").GetComponent<Button>();
+            _btnEnterTetris = transform.Find("GameList/btnEnterTetris").GetComponent<Button>();
+            _btnEnterTetris1= transform.Find("GameList/btnEnterTetris1").GetComponent<Button>();
         }
 
         private void RegisterButtonEvent()
         {
-            btnEnterTetris.onClick.AddListener(() =>
+            _btnEnterTetris.onClick.AddListener(() =>
             {
                 PlayerData.GamesName = GamesName.Tetris;
                 StartCoroutine(LoadManager<GameObject>.ShowPrefab(AssetsName.MainTetris));
                 gameObject.SetActive(false);
             });
-            btnEnterTetris1.onClick.AddListener(() =>
+            _btnEnterTetris1.onClick.AddListener(() =>
             {
                 PlayerData.GamesName = GamesName.Tetris;
                 StartCoroutine(LoadManager<GameObject>.ShowPrefab(AssetsName.MainTetris));

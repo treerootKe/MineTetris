@@ -9,8 +9,8 @@ namespace HollowKnight.SpecialObject.OtherObject
         private void Awake()
         {
             itemsName = "attack";
-            animatorEnemy = gameObject.GetComponent<Animator>();
-            rigidbodyEnemy = transform.GetComponent<Rigidbody2D>();
+            animatorGameObject = gameObject.GetComponent<Animator>();
+            rigidbodyGameObject = transform.GetComponent<Rigidbody2D>();
         }
 
         
@@ -26,11 +26,11 @@ namespace HollowKnight.SpecialObject.OtherObject
         {
             health -= hitDamage;
             var direction = posPlayer.x - transform.position.x > 0 ? -1 : 1;
-            animatorEnemy.Play("hit");
-            rigidbodyEnemy.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
+            animatorGameObject.Play("hit");
+            rigidbodyGameObject.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
             if (health <= 0)
             {
-                animatorEnemy.SetBool(Dead, true);
+                animatorGameObject.SetBool(Dead, true);
             }
         }
     }

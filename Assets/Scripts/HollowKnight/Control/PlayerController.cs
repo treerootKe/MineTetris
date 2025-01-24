@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 
 namespace HollowKnight.Control
 {
-    public class PlayerController : MonoSingleton<PlayerController>,IObjectsMove
+    public class PlayerController : AbstractSameMovement
     {
         private static readonly int Grounded = Animator.StringToHash("Grounded");
         private static readonly int Movement = Animator.StringToHash("Movement");
@@ -58,13 +58,13 @@ namespace HollowKnight.Control
         private Transform _transWallDetect;
         private Transform _transGroundDetect;
 
-        private float VelocityX
+        public float VelocityX
         {
             get => _rigidbodyCharacter.velocity.x;
             set => _rigidbodyCharacter.velocity = new Vector2(value, VelocityY);
         }
 
-        private float VelocityY
+        public float VelocityY
         {
             get => _rigidbodyCharacter.velocity.y;
             set => _rigidbodyCharacter.velocity = new Vector2(VelocityX, value);
@@ -228,16 +228,18 @@ namespace HollowKnight.Control
             }
         }
 
-        private void BeHit()
+        public override void BeHit(int damage,Vector2 attackerPosition)
         {
-            
+            var backDirection = transform.position.x - attackerPosition.x > 0 ? 1 : -1;
+            _animatorCharacter.Play("Hit");
+            _rigidbodyCharacter.AddForce(backDirection * new Vector2(10, 3), ForceMode2D.Impulse);
         }
         
 
         private void FixedUpdate()
         {
             UpdateMove(MoveSpeed);
-            UpdateMovement();
+            UpdateVelocity();
             UpdateDirection();
             UpdateJump();
             UpdateGravityScale();
@@ -262,7 +264,7 @@ namespace HollowKnight.Control
         }
 
 
-        public void UpdateMovement()
+        protected override void UpdateVelocity()
         {
             if (_isSliding)
             {
@@ -278,7 +280,7 @@ namespace HollowKnight.Control
             }
         }
 
-        public void UpdateDirection()
+        protected override void UpdateDirection()
         {
             if (VelocityX < 0)
             {
@@ -341,6 +343,11 @@ namespace HollowKnight.Control
                 _nJumpCount = 0;
             }
 
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                BeHit(collision);
+            }
+            
             if ((normal == Vector2.left || normal == Vector2.right) && !_isGrounded)
             {
                 _animatorCharacter.SetBool(Sliding, true);

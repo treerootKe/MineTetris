@@ -29,10 +29,10 @@ namespace Common
         /// <param name="time">抖动时间</param>
         public static void CameraShake(float time)
         {
-            CommonMembers.PlayerCamera.m_AmplitudeGain = 1;
+            CommonMembers.CinemaChineBasicMulti.m_AmplitudeGain = 1;
             DOVirtual.DelayedCall(time, () =>
             {
-                CommonMembers.PlayerCamera.m_AmplitudeGain = 0;
+                CommonMembers.CinemaChineBasicMulti.m_AmplitudeGain = 0;
             });
         }
         
