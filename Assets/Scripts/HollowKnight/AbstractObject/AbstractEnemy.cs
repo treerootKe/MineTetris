@@ -6,14 +6,12 @@ namespace HollowKnight.AbstractObject
     public abstract class AbstractEnemy : AbstractSameMovement
     {
         protected static readonly int Attack = Animator.StringToHash("Attack");
-        protected static readonly int Movement = Animator.StringToHash("Movement");
-        protected static readonly int Hit = Animator.StringToHash("Hit");
 
         protected string itemsName;
         protected float attackingMoveSpeed;
         
         protected bool isFly;
-        
+
         protected override void UpdateMoveX(float speed)
         {
             if (currentSpeed == 0)
@@ -24,13 +22,13 @@ namespace HollowKnight.AbstractObject
             VelocityX = speed * directionX;
         }
 
-        protected override void UpdateMoveY(float speed)
+        protected override void UpdateMoveY(float speed,float jumpPower = 0)
         {
             if (!isFly)
             {
                 return;
             }
-            rigidbodyGameObject.AddForce(new Vector2(0, speed * directionY), ForceMode2D.Impulse);
+            rigidBodyGameObject.AddForce(new Vector2(0, speed * directionY), ForceMode2D.Impulse);
         }
 
         protected override void UpdateDirection()

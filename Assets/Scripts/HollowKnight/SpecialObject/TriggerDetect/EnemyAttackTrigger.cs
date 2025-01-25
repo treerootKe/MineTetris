@@ -8,12 +8,14 @@ namespace HollowKnight.SpecialObject.TriggerDetect
     {
         public void TriggerEvent(Collider2D collider2d)
         {
-            transform.parent.GetComponent<AbstractEnemy>().AttackBehaviour(collider2d.transform);
+            // (transform.parent.GetComponent<MonoBehaviour>() as IBattleBehaviour)?.AttackBehaviour(collider2d.transform);
+            transform.parent.GetComponent<IBattleBehaviour>().AttackBehaviour(collider2d.transform);
         }
 
         public void TriggerExitEvent(Collider2D collider2d)
         {
-            transform.parent.GetComponent<AbstractEnemy>().StopAttacking(false);
+            // (transform.parent.GetComponent<MonoBehaviour>() as IBattleBehaviour)?.StopAttacking(false);
+            transform.parent.GetComponent<IBattleBehaviour>()?.StopAttacking(false);
         }
         
         private void OnTriggerEnter2D(Collider2D other)

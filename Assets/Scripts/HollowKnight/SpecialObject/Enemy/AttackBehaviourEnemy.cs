@@ -6,33 +6,31 @@ using HollowKnight.Control;
 
 namespace HollowKnight.SpecialObject.Enemy
 {
-    public class AttackBehaviourEnemy : AbstractEnemy
+    public class AttackBehaviourEnemy : AbstractEnemy,IBattleBehaviour
     {
-        private float _speed = 1.5f;
-        
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             itemsName = "attack";
             health = 3;
             stunDuration = 0.25f;
             moveSpeed = 1.5f;
+            currentSpeed = 1.5f;
             attackingMoveSpeed = 3f;
             isFly = false;
             directionX = (int)transform.localScale.x;
-            animatorGameObject = gameObject.GetComponent<Animator>();
-            rigidbodyGameObject = transform.GetComponent<Rigidbody2D>();
         }
 
-        public  void AttackBehaviour(Transform transPlayer)
+        public void AttackBehaviour(Transform defender)
         {
-            _speed = attackingMoveSpeed;
-            directionX  = transPlayer.position.x - transform.position.x > 0 ? 1 : -1;
-            directionY = isFly ? (transPlayer.position.y - transform.position.y > 0 ? 1 : -1) : 0;
+            currentSpeed = attackingMoveSpeed;
+            directionX = defender.position.x - transform.position.x > 0 ? 1 : -1;
+            directionY = isFly ? (defender.position.y - transform.position.y > 0 ? 1 : -1) : 0;
             transform.localScale = new Vector3(directionX, 1, 1);
             animatorGameObject.SetTrigger(Attack);
         }
 
-        private void StopAttacking(bool isBeHit)
+        public void StopAttacking(bool isBeHit)
         {
             if (isBeHit)
             {
@@ -42,7 +40,7 @@ namespace HollowKnight.SpecialObject.Enemy
             }
             animatorGameObject.SetTrigger(Movement);
             isStunned = false;
-            _speed = moveSpeed;
+            currentSpeed = moveSpeed;
         }
         
         public override void BeHit(int hitDamage, Vector2 posPlayer)
@@ -52,17 +50,17 @@ namespace HollowKnight.SpecialObject.Enemy
             var backDirection = posPlayer.x - transform.position.x > 0 ? -1 : 1;
             if (health > 0)
             {
-                rigidbodyGameObject.AddForce(new Vector2(backDirection * 10, 2), ForceMode2D.Impulse);
+                rigidBodyGameObject.AddForce(new Vector2(backDirection * 10, 2), ForceMode2D.Impulse);
                 animatorGameObject.SetTrigger(Hit);
                 StartCoroutine(WaitStun());
                 return;
             }
-            rigidbodyGameObject.AddForce(new Vector2(backDirection * 5, 2), ForceMode2D.Impulse);
+            rigidBodyGameObject.AddForce(new Vector2(backDirection * 5, 2), ForceMode2D.Impulse);
             animatorGameObject.SetTrigger(Dead);
             StartCoroutine(Recycle());
         }
 
-        private IEnumerator WaitStun()
+        public IEnumerator WaitStun()
         {
             yield return new WaitForSeconds(stunDuration);
             if (!isStunned || health <= 0)
@@ -81,11 +79,11 @@ namespace HollowKnight.SpecialObject.Enemy
 
         private void FixedUpdate()
         {
-            UpdateMoveX(_speed);
+            UpdateMoveX(currentSpeed);
             UpdateDirection();
         }
 
-        protected override void UpdateVelocity()
+        protected override void UpdateMovement()
         {
             animatorGameObject.SetInteger(Movement, currentSpeed != 0 ? 1 : 0);
         }

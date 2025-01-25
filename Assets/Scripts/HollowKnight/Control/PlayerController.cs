@@ -16,7 +16,6 @@ namespace HollowKnight.Control
     public class PlayerController : AbstractSameMovement
     {
         private static readonly int Grounded = Animator.StringToHash("Grounded");
-        private static readonly int Movement = Animator.StringToHash("Movement");
         private static readonly int SpeedY = Animator.StringToHash("SpeedY");
         private static readonly int Jump = Animator.StringToHash("Jump");
         private static readonly int DoubleJump = Animator.StringToHash("DoubleJump");
@@ -24,7 +23,6 @@ namespace HollowKnight.Control
         private static readonly int SlideJump = Animator.StringToHash("SlideJump");
         
         //移动参数
-        private const float MoveSpeed = 5f;
         private const float DashSpeed = 8f;
         private const float JumpPower = 5f;
         private const float SlideJumpSpeedY = 5f;
@@ -54,21 +52,6 @@ namespace HollowKnight.Control
         private bool _isJumping;
         private bool _isSliding;
         private bool _isSlideJumping;
-        
-        private Transform _transWallDetect;
-        private Transform _transGroundDetect;
-
-        public float VelocityX
-        {
-            get => _rigidbodyCharacter.velocity.x;
-            set => _rigidbodyCharacter.velocity = new Vector2(value, VelocityY);
-        }
-
-        public float VelocityY
-        {
-            get => _rigidbodyCharacter.velocity.y;
-            set => _rigidbodyCharacter.velocity = new Vector2(VelocityX, value);
-        }
 
         private PlayerInputAssets _playerInputAssets;
 
@@ -77,14 +60,13 @@ namespace HollowKnight.Control
             get { return _playerInputAssets ??= new PlayerInputAssets(); }
             set => _playerInputAssets = value;
         }
-
-        private Rigidbody2D _rigidbodyCharacter;
-        private Animator _animatorCharacter;
+        
 
         protected new void Awake()
         {
             base.Awake();
             FindComponents();
+            moveSpeed = 5f;
             _lastSlashTime = Time.time;
         }
 
@@ -113,11 +95,7 @@ namespace HollowKnight.Control
             _collider2DSlash = transform.Find("Attacks/Slash").GetComponent<PolygonCollider2D>();
             _collider2DUpSlash = transform.Find("Attacks/UpSlash").GetComponent<PolygonCollider2D>();
             _collider2DDownSlash = transform.Find("Attacks/DownSlash").GetComponent<PolygonCollider2D>();
-            _transWallDetect = transform.Find("Detects/WallDetect");
-            _transGroundDetect = transform.Find("Detects/GroundDetect");
             PlayerInputAssets = new PlayerInputAssets();
-            _rigidbodyCharacter = GetComponent<Rigidbody2D>();
-            _animatorCharacter = GetComponent<Animator>();
         }
 
         private void CallBackMove(InputAction.CallbackContext context)
@@ -137,24 +115,24 @@ namespace HollowKnight.Control
             
             if (_nJumpCount == 2)
             {
-                _animatorCharacter.SetTrigger(DoubleJump);
+                animatorGameObject.SetTrigger(DoubleJump);
                 VelocityY = 0;
             }
             else if (!_isSliding)
             {
-                _animatorCharacter.SetTrigger(Jump);
+                animatorGameObject.SetTrigger(Jump);
             }
 
             _isGrounded = false;
-            _animatorCharacter.SetBool(Grounded, false);
+            animatorGameObject.SetBool(Grounded, false);
             _isCanJump = true;
         }
 
         private IEnumerator SlidingJump()
         {
             _isSlideJumping = true;
-            _animatorCharacter.SetTrigger(SlideJump);
-            _animatorCharacter.SetBool(Sliding,false);
+            animatorGameObject.SetTrigger(SlideJump);
+            animatorGameObject.SetBool(Sliding,false);
             VelocityY = 0;
             VelocityX = SlideJumpSpeedX * -_nDirection;
             yield return new WaitForSeconds(0.17f);
@@ -177,18 +155,18 @@ namespace HollowKnight.Control
             if (_movementDirection.y > 0)
             {
                 _slashType = SlashType.UpSlash;
-                _animatorCharacter.Play("UpSlash");
+                animatorGameObject.Play("UpSlash");
             }
             else if (_movementDirection.y < 0)
             {
                 _slashType = SlashType.DownSlash;
-                _animatorCharacter.Play("DownSlash");
+                animatorGameObject.Play("DownSlash");
             }
             else
             {
                 _slashType = SlashType.Slash;
                 var rangeSlash = _nSlashIndex++ % 2;
-                _animatorCharacter.Play($"Slash{rangeSlash}");
+                animatorGameObject.Play($"Slash{rangeSlash}");
             }
 
             StartCoroutine(SlashDetection(_slashType));
@@ -231,21 +209,21 @@ namespace HollowKnight.Control
         public override void BeHit(int damage,Vector2 attackerPosition)
         {
             var backDirection = transform.position.x - attackerPosition.x > 0 ? 1 : -1;
-            _animatorCharacter.Play("Hit");
-            _rigidbodyCharacter.AddForce(backDirection * new Vector2(10, 3), ForceMode2D.Impulse);
+            animatorGameObject.Play("Hit");
+            rigidBodyGameObject.AddForce(backDirection * new Vector2(10, 3), ForceMode2D.Impulse);
         }
         
 
         private void FixedUpdate()
         {
-            UpdateMove(MoveSpeed);
-            UpdateVelocity();
+            UpdateMoveX(moveSpeed);
+            UpdateMoveY(0, JumpPower);
+            UpdateMovement();
             UpdateDirection();
-            UpdateJump();
             UpdateGravityScale();
         }
 
-        public void UpdateMove(float speed)
+        protected override void UpdateMoveX(float speed)
         {
             if (_isSliding)
             {
@@ -263,20 +241,36 @@ namespace HollowKnight.Control
             VelocityX = speed * _movementDirection.x;
         }
 
+        protected override void UpdateMoveY(float speed, float jumpPower = 0)
+        {
+            if (!_isCanJump)
+            {
+                return;
+            }
+            _isJumping = true;
+            
+            if (_isSliding && !_isSlideJumping)
+            {
+                StartCoroutine(SlidingJump());
+                return;
+            }
+            rigidBodyGameObject.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+        }
 
-        protected override void UpdateVelocity()
+
+        protected override void UpdateMovement()
         {
             if (_isSliding)
             {
-                _animatorCharacter.SetInteger(Movement, 0);
+                animatorGameObject.SetInteger(Movement, 0);
             }
             else if (_isGrounded)
             {
-                _animatorCharacter.SetInteger(Movement, _movementDirection.x != 0 ? 1 : 0);
+                animatorGameObject.SetInteger(Movement, _movementDirection.x != 0 ? 1 : 0);
             }
             else
             {
-                _animatorCharacter.SetInteger(Movement, VelocityX != 0 ? 1 : 0);
+                animatorGameObject.SetInteger(Movement, VelocityX != 0 ? 1 : 0);
             }
         }
 
@@ -295,23 +289,7 @@ namespace HollowKnight.Control
             }
         }
 
-        public void UpdateJump()
-        {
-            if (!_isCanJump)
-            {
-                return;
-            }
-            _isJumping = true;
-            
-            if (_isSliding && !_isSlideJumping)
-            {
-                StartCoroutine(SlidingJump());
-                return;
-            }
-            _rigidbodyCharacter.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
-        }
-
-        public void UpdateGravityScale()
+        private void UpdateGravityScale()
         {
             float gravityScale;
 
@@ -322,10 +300,10 @@ namespace HollowKnight.Control
             else
             {
                 gravityScale = VelocityY > 0.0f ? JumpGravityScale : FallingGravityScale;
-                _animatorCharacter.SetFloat(SpeedY, VelocityY);
+                animatorGameObject.SetFloat(SpeedY, VelocityY);
             }
 
-            _rigidbodyCharacter.gravityScale = gravityScale;
+            rigidBodyGameObject.gravityScale = gravityScale;
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -334,8 +312,8 @@ namespace HollowKnight.Control
             if (collision.gameObject.CompareTag("Ground") && normal == Vector2.up)
             {
                 _isGrounded = true;
-                _animatorCharacter.SetBool(Grounded, true);
-                _animatorCharacter.SetBool(Sliding, false);
+                animatorGameObject.SetBool(Grounded, true);
+                animatorGameObject.SetBool(Sliding, false);
                 _isCanJump = false;
                 _isJumping = false;
                 _isSlideJumping = false;
@@ -345,12 +323,12 @@ namespace HollowKnight.Control
 
             if (collision.gameObject.CompareTag("Enemy"))
             {
-                BeHit(collision);
+                BeHit(1,collision.transform.position);
             }
             
             if ((normal == Vector2.left || normal == Vector2.right) && !_isGrounded)
             {
-                _animatorCharacter.SetBool(Sliding, true);
+                animatorGameObject.SetBool(Sliding, true);
                 VelocityY = 0;
                 _isSliding = true;
                 _isCanJump = false;
@@ -364,14 +342,14 @@ namespace HollowKnight.Control
         {
             if (_isSliding)
             {
-                _animatorCharacter.SetBool(Sliding, false);
+                animatorGameObject.SetBool(Sliding, false);
                 _isSliding = false;
                 return;
             }
 
             if (_isGrounded)
             {
-                _animatorCharacter.SetBool(Grounded, false);
+                animatorGameObject.SetBool(Grounded, false);
             }
         }
     }

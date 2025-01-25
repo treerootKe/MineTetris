@@ -1,41 +1,37 @@
 using System.Collections;
+using HollowKnight.AbstractObject;
 using UnityEngine;
 
 namespace HollowKnight.SpecialObject.Enemy
 {
-    public class MinorEnemy: AbstractObject.AbstractEnemy
+    public class MinorEnemy: AbstractEnemy
     {
         private  void Awake()
         {
             itemsName = "minor";
             health = 3;
-            damage = 1;
-            animatorEnemy = gameObject.GetComponent<Animator>();
-            rigidbodyGameObject = transform.GetComponent<Rigidbody2D>();
-        }
-        
-        public override void AttackBehaviour(Transform transPlayer)
-        {
-        }
 
-        public override void StopAttacking(bool isBeHit)
-        {
         }
         
         public override void BeHit(int hitDamage, Vector2 posPlayer)
         {
             health -= hitDamage;
             var direction = posPlayer.x - transform.position.x > 0 ? -1 : 1;
-            animatorEnemy.Play("hit");
-            rigidbodyGameObject.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
+            animatorGameObject.Play("hit");
+            rigidBodyGameObject.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
             if (health > 0)
             {
                 return;
             }
-            animatorEnemy.SetBool(Dead, true);
+            animatorGameObject.SetBool(Dead, true);
             StartCoroutine(Recycle());
         }
 
+        protected override void UpdateMovement()
+        {
+            animatorGameObject.SetInteger(Movement, currentSpeed != 0 ? 1 : 0);
+        }
+        
         private IEnumerator Recycle()
         {
             yield return new WaitForSeconds(1.5f);
