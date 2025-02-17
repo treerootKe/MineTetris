@@ -6,17 +6,17 @@ namespace HollowKnight
 {
     public class CommonMembers
     {
-        private static CinemachineBasicMultiChannelPerlin _cinemaChineBasicMulti;
+        private static CinemachineBasicMultiChannelPerlin s_cinemaChineBasicMulti;
 
         public static CinemachineBasicMultiChannelPerlin CinemaChineBasicMulti
         {
             get
             {
-                if (_cinemaChineBasicMulti == null)
+                if (s_cinemaChineBasicMulti == null)
                 {
-                    _cinemaChineBasicMulti = GameObject.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+                    s_cinemaChineBasicMulti = GameObject.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
                 }
-                return _cinemaChineBasicMulti;
+                return s_cinemaChineBasicMulti;
             }
         }
         

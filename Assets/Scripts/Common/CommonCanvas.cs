@@ -9,9 +9,9 @@ namespace Common
 {
     public class CommonCanvas:MonoBehaviour
     {
-        public static Transform TraGameMenuCanvas;  //菜单UI界面
-        public static Transform TraGameCanvas;      //游戏主体UI界面
-        public static Transform TraGameUICanvas;    //游戏UI界面
+        public static Transform S_TraGameMenuCanvas;  //菜单UI界面
+        public static Transform S_TraGameCanvas;      //游戏主体UI界面
+        public static Transform S_TraGameUICanvas;    //游戏UI界面
 
         private void Awake()
         {
@@ -20,9 +20,9 @@ namespace Common
 
         private void FindComponent()
         {
-            TraGameMenuCanvas = transform.Find("GameMenuCanvas");
-            TraGameCanvas = transform.Find("GameCanvas");
-            TraGameUICanvas = transform.Find("GameUICanvas");
+            S_TraGameMenuCanvas = transform.Find("GameMenuCanvas");
+            S_TraGameCanvas = transform.Find("GameCanvas");
+            S_TraGameUICanvas = transform.Find("GameUICanvas");
         }
     }
 }

@@ -2,6 +2,6 @@ namespace Common
 {
     public class PlayerData
     {
-        public static GamesName GamesName;
+        public static GamesName S_GamesName;
     }
 }

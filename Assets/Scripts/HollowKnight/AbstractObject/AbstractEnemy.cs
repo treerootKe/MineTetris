@@ -1,40 +1,72 @@
+using System;
 using DesignPattern;
+using HollowKnight.ObjectsBehaviourInterface;
 using UnityEngine;
 
 namespace HollowKnight.AbstractObject
 {
-    public abstract class AbstractEnemy : AbstractSameMovement
+    public abstract class AbstractEnemy : MonoBehaviour,IDefenseBehaviour
     {
-        protected static readonly int Attack = Animator.StringToHash("Attack");
-
-        protected string itemsName;
-        protected float attackingMoveSpeed;
+        protected string ItemsName;
+        protected float AttackingMoveSpeed;
         
-        protected bool isFly;
+        protected float MoveSpeed;
+        protected float CurrentSpeed;
+        
+        protected int Health;
+        protected int DirectionX;
+        protected int DirectionY;
+        protected float StunDuration;
+        
+        protected bool IsStunned;
+        
+        protected Animator AnimatorGameObject;
+        protected Rigidbody2D RigidBodyGameObject;
+        
+        protected bool IsFly;
 
-        protected override void UpdateMoveX(float speed)
+        protected  void Awake()
         {
-            if (currentSpeed == 0)
+            AnimatorGameObject = this.GetComponent<Animator>();
+            RigidBodyGameObject = this.GetComponent<Rigidbody2D>();
+        }
+
+        public float VelocityX
+        {
+            get => RigidBodyGameObject.velocity.x;
+            set => RigidBodyGameObject.velocity = new Vector2(value, VelocityY);
+        }
+
+        public float VelocityY
+        {
+            get => RigidBodyGameObject.velocity.y;
+            set => RigidBodyGameObject.velocity = new Vector2(VelocityX, value);
+        }
+        
+        protected void UpdateMoveX(float speed)
+        {
+            if (CurrentSpeed == 0)
             {
                 return;
             }
 
-            VelocityX = speed * directionX;
+            VelocityX = speed * DirectionX;
         }
 
-        protected override void UpdateMoveY(float speed,float jumpPower = 0)
+        protected void UpdateMoveY(float speed,float jumpPower = 0)
         {
-            if (!isFly)
+            if (!IsFly)
             {
                 return;
             }
-            rigidBodyGameObject.AddForce(new Vector2(0, speed * directionY), ForceMode2D.Impulse);
+            RigidBodyGameObject.AddForce(new Vector2(0, speed * DirectionY), ForceMode2D.Impulse);
         }
 
-        protected override void UpdateDirection()
+        protected void UpdateDirection()
         {
-            transform.localScale = new Vector3(directionX, 1, 1);
+            transform.localScale = new Vector3(DirectionX, 1, 1);
         }
-        
+
+        public abstract void BeHit(int hitDamage, Vector2 posPlayer);
     }
 }

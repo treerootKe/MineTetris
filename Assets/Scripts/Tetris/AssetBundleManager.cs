@@ -18,7 +18,7 @@ namespace Tetris
         {
             _assetName = Path.GetFileName(content.StrPath);
 #if UNITY_EDITOR
-            string path1 = new StringBuilder("Assets/HotUpdateResources/").Append(PlayerData.GamesName).Append("/").Append(content.StrType).Append("/").Append(content.StrPath).ToString();
+            string path1 = new StringBuilder("Assets/HotUpdateResources/").Append(PlayerData.S_GamesName).Append("/").Append(content.StrType).Append("/").Append(content.StrPath).ToString();
             T asset = (T)AssetDatabase.LoadAssetAtPath(path1, typeof(T));
             callback(content, asset);
 #else
@@ -30,7 +30,7 @@ namespace Tetris
         static IEnumerator  LoadAssetBundle<T>(AssetContent content,Action<AssetContent, T> callback) where T : Object
         {
             string assetBundleName;
-            string assetPath = PlayerData.GamesName + "_" + content.StrType + "_" + Path.GetDirectoryName(content.StrPath)?.Replace('\\', '_');
+            string assetPath = PlayerData.S_GamesName + "_" + content.StrType + "_" + Path.GetDirectoryName(content.StrPath)?.Replace('\\', '_');
             assetPath = assetPath.ToLower();
 #if UNITY_ANDROID
         //对于安卓平台，UnityWebRequest从jar包中加载  

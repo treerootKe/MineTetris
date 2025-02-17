@@ -1,4 +1,5 @@
 using System.Collections;
+using Common;
 using HollowKnight.AbstractObject;
 using UnityEngine;
 
@@ -8,28 +9,28 @@ namespace HollowKnight.SpecialObject.Enemy
     {
         private  void Awake()
         {
-            itemsName = "minor";
-            health = 3;
+            ItemsName = "minor";
+            Health = 3;
 
         }
         
         public override void BeHit(int hitDamage, Vector2 posPlayer)
         {
-            health -= hitDamage;
+            Health -= hitDamage;
             var direction = posPlayer.x - transform.position.x > 0 ? -1 : 1;
-            animatorGameObject.Play("hit");
-            rigidBodyGameObject.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
-            if (health > 0)
+            AnimatorGameObject.Play("hit");
+            RigidBodyGameObject.AddForce(new Vector2(direction * 5, 2), ForceMode2D.Impulse);
+            if (Health > 0)
             {
                 return;
             }
-            animatorGameObject.SetBool(Dead, true);
+            AnimatorGameObject.SetBool(CommonFields.Dead, true);
             StartCoroutine(Recycle());
         }
 
-        protected override void UpdateMovement()
+        protected  void UpdateMovement()
         {
-            animatorGameObject.SetInteger(Movement, currentSpeed != 0 ? 1 : 0);
+            AnimatorGameObject.SetInteger(CommonFields.Movement, CurrentSpeed != 0 ? 1 : 0);
         }
         
         private IEnumerator Recycle()
