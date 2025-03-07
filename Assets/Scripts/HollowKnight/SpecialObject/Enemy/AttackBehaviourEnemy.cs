@@ -4,12 +4,13 @@ using Common;
 using UnityEngine;
 using HollowKnight.AbstractObject;
 using HollowKnight.Control;
+using HollowKnight.ObjectsBehaviourInterface;
 
 namespace HollowKnight.SpecialObject.Enemy
 {
-    public class AttackBehaviourEnemy : AbstractEnemy,IBattleBehaviour
+    public class AttackBehaviourEnemy : AbstractEnemy,IEnemiesBehaviour
     {
-        void Awake()
+        new void Awake()
         {
             base.Awake();
             ItemsName = "attack";
@@ -44,8 +45,25 @@ namespace HollowKnight.SpecialObject.Enemy
             CurrentSpeed = MoveSpeed;
         }
         
-        public override void BeHit(int hitDamage, Vector2 posPlayer)
+        public void ChangeDirection()
         {
+            DirectionX = -DirectionX;
+        }
+        
+        public  IEnumerator WaitStun()
+        {
+            yield return new WaitForSeconds(StunDuration);
+            if (!IsStunned || Health <= 0)
+            {
+                yield break;
+            }
+            IsStunned = false;
+            AttackBehaviour(PlayerController.Instance.transform);
+        }
+        
+        public override void BeHit(Vector2 posPlayer,int hitDamage = 0)
+        {
+            CommonMethod.CameraShake(0.25f);
             StopAttacking(true);
             Health -= hitDamage;
             var backDirection = posPlayer.x - transform.position.x > 0 ? -1 : 1;
@@ -59,17 +77,6 @@ namespace HollowKnight.SpecialObject.Enemy
             RigidBodyGameObject.AddForce(new Vector2(backDirection * 5, 2), ForceMode2D.Impulse);
             AnimatorGameObject.SetTrigger(CommonFields.Dead);
             StartCoroutine(Recycle());
-        }
-
-        public IEnumerator WaitStun()
-        {
-            yield return new WaitForSeconds(StunDuration);
-            if (!IsStunned || Health <= 0)
-            {
-                yield break;
-            }
-            IsStunned = false;
-            AttackBehaviour(PlayerController.Instance.transform);
         }
         
         private IEnumerator Recycle()
@@ -93,27 +100,8 @@ namespace HollowKnight.SpecialObject.Enemy
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var normal = collision.contacts[0].normal;
-            if (collision.gameObject.CompareTag("Player"))
-            {
-                
-            }
-            
-            if ((normal == Vector2.left || normal == Vector2.right))
-            {
-                if (transform.localScale.x > 0 && normal.x > 0)
-                {
-                    return;
-                }
-
-                if (transform.localScale.x < 0 && normal.x < 0)
-                {
-                    return;
-                }
-
-                // VelocityX = 0;
-                // VelocityY = 0;
-                DirectionX = -DirectionX;
-            }
+            var beHitAble = collision.gameObject.GetComponent<IDefenseBehaviour>();
+            beHitAble?.BeHit(transform.position);
         }
     }
 }

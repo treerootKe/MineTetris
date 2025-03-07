@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Common;
 using DesignPattern;
@@ -31,6 +32,7 @@ namespace HollowKnight.Control
         private int _nSlashIndex;
         private SlashType _slashType;
         private float _lastSlashTime;
+        private float _invincibilityTime;
         private const float SlashInterval = 0.2f;
         
         //玩家身上的组件
@@ -43,7 +45,9 @@ namespace HollowKnight.Control
         private Vector2 _movementDirection;
         private int _nJumpCount;
         private int _nDirection;
-        
+
+        private bool _isStunned;
+        private bool _isInvincible;
         private bool _isGrounded;
         private bool _isCanJump;
         private bool _isJumping;
@@ -69,7 +73,7 @@ namespace HollowKnight.Control
             get => RigidBodyGameObject.velocity.y;
             set => RigidBodyGameObject.velocity = new Vector2(VelocityX, value);
         }
-
+ 
         protected new void Awake()
         {
             base.Awake();
@@ -89,6 +93,10 @@ namespace HollowKnight.Control
 
         private void OnDisable()
         {
+            foreach (var tween in CommonFields.S_NeedRecyclesTween)
+            {
+                tween?.Kill();
+            }
             PlayerInputAssets.PlayerInputMap.Move.performed -= CallBackMove;
             PlayerInputAssets.PlayerInputMap.Jump.started -= CallBackJump;
             PlayerInputAssets.PlayerInputMap.Jump.performed -= CallbackCancelJump;
@@ -114,6 +122,10 @@ namespace HollowKnight.Control
 
         private void CallBackJump(InputAction.CallbackContext contextCallback)
         {
+            if (_isStunned)
+            {
+                return;
+            }
             if (_nJumpCount >= 2)
             {
                 _isCanJump = false;
@@ -131,8 +143,7 @@ namespace HollowKnight.Control
             {
                 AnimatorGameObject.SetTrigger(CommonFields.Jump);
             }
-
-            _isGrounded = false;
+            
             AnimatorGameObject.SetBool(CommonFields.Grounded, false);
             _isCanJump = true;
         }
@@ -156,7 +167,7 @@ namespace HollowKnight.Control
 
         private void CallbackAttack(InputAction.CallbackContext context)
         {
-            if (Time.time - _lastSlashTime < SlashInterval)
+            if (Time.time - _lastSlashTime < SlashInterval || _isStunned || _isSliding)
             {
                 return;
             }
@@ -178,48 +189,41 @@ namespace HollowKnight.Control
                 AnimatorGameObject.Play($"Slash{rangeSlash}");
             }
 
-            StartCoroutine(SlashDetection(_slashType));
+            CommonFields.S_NeedRecyclesTween.Add(DOVirtual.DelayedCall(0.08f, () => SlashDetection(_slashType)));
         }
 
         private Collider2D _collider2D;
         private ContactFilter2D _contactFilter;
         private readonly List<Collider2D> _collider2Ds = new List<Collider2D>();
         
-        private IEnumerator SlashDetection(SlashType slashType)
+        private void SlashDetection(SlashType slashType)
         {
-            switch (slashType)
+            _collider2D = slashType switch
             {
-                case SlashType.Slash:
-                    _collider2D = _collider2DSlash;
-                    break;
-                case SlashType.UpSlash:
-                    _collider2D = _collider2DUpSlash;
-                    break;
-                case SlashType.DownSlash: 
-                    _collider2D = _collider2DDownSlash;
-                    break;
-                default:
-                    _collider2D = null;
-                        break;
-            }
-            
+                SlashType.Slash => _collider2DSlash,
+                SlashType.UpSlash => _collider2DUpSlash,
+                SlashType.DownSlash => _collider2DDownSlash,
+                _ => null
+            };
+
             Physics2D.OverlapCollider(_collider2D, _contactFilter, _collider2Ds);
-            foreach (var collider2DItem in _collider2Ds)
+            foreach (var beHitAble in _collider2Ds.Select(collider2DItem => collider2DItem.GetComponent<IDefenseBehaviour>()))
             {
-                if (collider2DItem.CompareTag("Enemy"))
-                {
-                    yield return new WaitForSeconds(0.08f);
-                    CommonMethod.CameraShake(0.25f);
-                    collider2DItem.GetComponent<IDefenseBehaviour>().BeHit(2, transform.position);
-                }
+                beHitAble?.BeHit(transform.position, 2);
             }
         }
 
-        public void BeHit(int damage,Vector2 attackerPosition)
+        public void BeHit(Vector2 attackerPosition,int damage = 0)
         {
-            var backDirection = transform.position.x - attackerPosition.x > 0 ? 1 : -1;
+            CommonMethod.CameraShake(0.5f);
+            VelocityX = 0;
+            VelocityY = 0;
+            _isStunned = true;
+            var backDirectionX = transform.position.x - attackerPosition.x > 0 ? 1 : -1;
+            var backDirectionY = transform.position.y - attackerPosition.y > 0 ? 1 : -1;
             AnimatorGameObject.Play("Hit");
-            RigidBodyGameObject.AddForce(backDirection * new Vector2(10, 3), ForceMode2D.Impulse);
+            RigidBodyGameObject.AddForce(new Vector2(15 * backDirectionX, 5 * backDirectionY), ForceMode2D.Impulse);
+            DOVirtual.DelayedCall(0.25f, () => _isStunned = false);
         }
         
 
@@ -243,7 +247,7 @@ namespace HollowKnight.Control
                 }
             }
 
-            if (_movementDirection.x == 0 || _isSlideJumping)
+            if (_movementDirection.x == 0 || _isSlideJumping || _isStunned)
             {
                 return;
             }
@@ -285,6 +289,11 @@ namespace HollowKnight.Control
 
         private void UpdateDirection()
         {
+            if (_isStunned)
+            {
+                return;
+            }
+            
             if (VelocityX < 0)
             {
                 transform.localScale = new Vector3(1, 1, 1);
@@ -329,11 +338,6 @@ namespace HollowKnight.Control
                 _isSliding = false;
                 _nJumpCount = 0;
             }
-
-            if (collision.gameObject.CompareTag("Enemy"))
-            {
-                BeHit(1,collision.transform.position);
-            }
             
             if ((normal == Vector2.left || normal == Vector2.right) && !_isGrounded)
             {
@@ -358,6 +362,7 @@ namespace HollowKnight.Control
 
             if (_isGrounded)
             {
+                _isGrounded = false;
                 AnimatorGameObject.SetBool(CommonFields.Grounded, false);
             }
         }

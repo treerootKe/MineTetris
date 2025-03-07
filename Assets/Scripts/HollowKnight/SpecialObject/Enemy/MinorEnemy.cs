@@ -14,7 +14,7 @@ namespace HollowKnight.SpecialObject.Enemy
 
         }
         
-        public override void BeHit(int hitDamage, Vector2 posPlayer)
+        public override void BeHit(Vector2 posPlayer,int hitDamage = 0)
         {
             Health -= hitDamage;
             var direction = posPlayer.x - transform.position.x > 0 ? -1 : 1;

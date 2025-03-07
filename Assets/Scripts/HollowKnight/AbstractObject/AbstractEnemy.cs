@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using DesignPattern;
+using HollowKnight.Control;
 using HollowKnight.ObjectsBehaviourInterface;
 using UnityEngine;
 
@@ -67,6 +69,6 @@ namespace HollowKnight.AbstractObject
             transform.localScale = new Vector3(DirectionX, 1, 1);
         }
 
-        public abstract void BeHit(int hitDamage, Vector2 posPlayer);
+        public abstract void BeHit(Vector2 posPlayer,int hitDamage = 0);
     }
 }

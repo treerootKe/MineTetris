@@ -1,37 +1,22 @@
 using System;
 using HollowKnight.AbstractObject;
+using HollowKnight.Control;
 using UnityEngine;
 
 namespace HollowKnight.SpecialObject.TriggerDetect
 {
-    public class EnemyAttackTrigger : MonoBehaviour, ITriggerEvent
+    public class EnemyAttackTrigger : MonoBehaviour
     {
-        public void TriggerEvent(Collider2D collider2d)
-        {
-            // (transform.parent.GetComponent<MonoBehaviour>() as IBattleBehaviour)?.AttackBehaviour(collider2d.transform);
-            transform.parent.GetComponent<IBattleBehaviour>().AttackBehaviour(collider2d.transform);
-        }
-
-        public void TriggerExitEvent(Collider2D collider2d)
-        {
-            // (transform.parent.GetComponent<MonoBehaviour>() as IBattleBehaviour)?.StopAttacking(false);
-            transform.parent.GetComponent<IBattleBehaviour>()?.StopAttacking(false);
-        }
-        
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.CompareTag("Player"))
-            {
-                TriggerEvent(other);
-            }
+            var trigger = transform.parent.GetComponent<PlayerController>();
+            trigger?.AttackBehaviour(other.transform);
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (other.CompareTag("Player"))
-            {
-                TriggerExitEvent(other);
-            }
+            var trigger = transform.parent.GetComponent<IEnemiesBehaviour>();
+            trigger?.StopAttacking(false);
         }
     }
 }

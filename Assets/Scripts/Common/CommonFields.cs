@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Common
@@ -14,5 +16,7 @@ namespace Common
         public static readonly int Attack = Animator.StringToHash("Attack");
         public static readonly int Hit = Animator.StringToHash("Hit");
         public static readonly int Dead = Animator.StringToHash("Dead");
+        
+        public static List<Tween> S_NeedRecyclesTween = new List<Tween>();
     }
 }

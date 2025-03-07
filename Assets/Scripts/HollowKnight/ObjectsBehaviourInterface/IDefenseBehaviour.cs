@@ -4,6 +4,6 @@ namespace HollowKnight.ObjectsBehaviourInterface
 {
     public interface IDefenseBehaviour
     {
-        void BeHit(int damage, Vector2 attackerPosition);
+        void BeHit(Vector2 attackerPosition, int damage = 0);
     }
 }
