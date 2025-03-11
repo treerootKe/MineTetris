@@ -207,9 +207,12 @@ namespace HollowKnight.Control
             };
 
             Physics2D.OverlapCollider(_collider2D, _contactFilter, _collider2Ds);
-            foreach (var beHitAble in _collider2Ds.Select(collider2DItem => collider2DItem.GetComponent<IDefenseBehaviour>()))
+            foreach (var colliderItem in _collider2Ds)
             {
-                beHitAble?.BeHit(transform.position, 2);
+                if (colliderItem.name != name)
+                {
+                    colliderItem.GetComponent<IDefenseBehaviour>()?.BeHit(transform.position, 2);
+                }
             }
         }
 
