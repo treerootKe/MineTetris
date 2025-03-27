@@ -114,7 +114,7 @@ TextureImporter:
       213: 3253397186307130958
     second: HUD main - atlas0 #00000400_35
   externalObjects: {}
-  serializedVersion: 10
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -131,9 +131,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -142,9 +145,9 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -165,9 +168,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 1
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -179,6 +188,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -191,6 +201,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -962,9 +986,45 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      HUD main - atlas0 #00000400_0: -2278569350827193682
+      HUD main - atlas0 #00000400_1: -7043925764560890359
+      HUD main - atlas0 #00000400_10: 5465291897793002786
+      HUD main - atlas0 #00000400_11: 6285170235913131085
+      HUD main - atlas0 #00000400_12: -1665523736612680696
+      HUD main - atlas0 #00000400_13: 4070543034960203592
+      HUD main - atlas0 #00000400_14: -5808758907475745625
+      HUD main - atlas0 #00000400_15: -4326818560251867388
+      HUD main - atlas0 #00000400_16: 2864981202085448740
+      HUD main - atlas0 #00000400_17: 7434041959701833
+      HUD main - atlas0 #00000400_18: 978024330255763236
+      HUD main - atlas0 #00000400_19: -3687097823099142832
+      HUD main - atlas0 #00000400_2: 1153494089834435540
+      HUD main - atlas0 #00000400_20: -5908182539214690430
+      HUD main - atlas0 #00000400_21: -7676654522648104291
+      HUD main - atlas0 #00000400_22: 1944763073024865812
+      HUD main - atlas0 #00000400_23: -8453931469146213245
+      HUD main - atlas0 #00000400_24: -9018698897965071651
+      HUD main - atlas0 #00000400_25: -1015414189632980815
+      HUD main - atlas0 #00000400_26: -6157883132102004278
+      HUD main - atlas0 #00000400_27: 2108994195934554165
+      HUD main - atlas0 #00000400_28: 9058748003052703112
+      HUD main - atlas0 #00000400_29: -8368405861678445702
+      HUD main - atlas0 #00000400_3: -7103246158836587396
+      HUD main - atlas0 #00000400_30: 1788337101341361812
+      HUD main - atlas0 #00000400_31: 2116443279034942336
+      HUD main - atlas0 #00000400_32: 3977846132206969265
+      HUD main - atlas0 #00000400_33: 7277279697192202427
+      HUD main - atlas0 #00000400_34: -7191819630783908685
+      HUD main - atlas0 #00000400_35: 3253397186307130958
+      HUD main - atlas0 #00000400_4: 1267360258469218074
+      HUD main - atlas0 #00000400_5: -2736075379460761313
+      HUD main - atlas0 #00000400_6: 13610521327872284
+      HUD main - atlas0 #00000400_7: -7187850449337015949
+      HUD main - atlas0 #00000400_8: 3640119333387781492
+      HUD main - atlas0 #00000400_9: -4692964865717555492
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

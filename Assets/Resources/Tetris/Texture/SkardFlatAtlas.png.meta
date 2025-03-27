@@ -186,7 +186,7 @@ TextureImporter:
       213: 21300120
     second: SkardFlatAtlas_37
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -203,10 +203,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -245,6 +247,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
@@ -257,6 +260,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -269,6 +273,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -281,6 +286,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -293,6 +299,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -854,9 +861,35 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      Background_1: 21300046
+      Background_2: 21300048
+      Background_3: 21300078
+      Block: 21300092
+      ButtonPause: 21300074
+      ButtonRank: 21300062
+      ButtonRestart: 21300084
+      ButtonSetting: 21300070
+      ButtonStart: 21300112
+      SkardFlatAtlas_10: 21300066
+      SkardFlatAtlas_11: 21300068
+      SkardFlatAtlas_13: 21300072
+      SkardFlatAtlas_18: 21300082
+      SkardFlatAtlas_2: 21300050
+      SkardFlatAtlas_21: 21300088
+      SkardFlatAtlas_25: 21300096
+      SkardFlatAtlas_26: 21300098
+      SkardFlatAtlas_28: 21300102
+      SkardFlatAtlas_30: 21300106
+      SkardFlatAtlas_32: 21300110
+      SkardFlatAtlas_35: 21300116
+      SkardFlatAtlas_36: 21300118
+      SkardFlatAtlas_37: 21300120
+      SkardFlatAtlas_4: 21300054
+      SkardFlatAtlas_5: 21300056
+      SkardFlatAtlas_6: 21300058
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: images
   assetBundleVariant: 

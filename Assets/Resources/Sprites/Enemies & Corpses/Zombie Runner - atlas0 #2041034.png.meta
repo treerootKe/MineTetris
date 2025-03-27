@@ -108,7 +108,7 @@ TextureImporter:
       213: -2432683800895559182
     second: atlas0 #2041034_34
   externalObjects: {}
-  serializedVersion: 10
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -125,9 +125,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -136,9 +139,9 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -159,9 +162,15 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 1
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -173,6 +182,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -185,6 +195,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -935,9 +959,44 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      atlas0 #2041034_0: -1325533620173810695
+      atlas0 #2041034_1: 1135350052916860175
+      atlas0 #2041034_10: 563248110378323413
+      atlas0 #2041034_11: 8639494782473358953
+      atlas0 #2041034_12: -1754943840169791900
+      atlas0 #2041034_13: 4872396430090524111
+      atlas0 #2041034_14: 577722672739331617
+      atlas0 #2041034_15: 5792033023025582982
+      atlas0 #2041034_16: -1115164536029439976
+      atlas0 #2041034_17: 6099358475277387053
+      atlas0 #2041034_18: -7886472335019117565
+      atlas0 #2041034_19: -2160920769117999296
+      atlas0 #2041034_2: 1587461185841016583
+      atlas0 #2041034_20: -492969508644728151
+      atlas0 #2041034_21: 1235072738143694085
+      atlas0 #2041034_22: -4092027690058709263
+      atlas0 #2041034_23: 4867533088660177142
+      atlas0 #2041034_24: 6197990737795257136
+      atlas0 #2041034_25: -8441391031000046448
+      atlas0 #2041034_26: 2379767280316761437
+      atlas0 #2041034_27: -7759619837451371493
+      atlas0 #2041034_28: -8883355915340963800
+      atlas0 #2041034_29: 2280473254900979526
+      atlas0 #2041034_3: 3347074951647051838
+      atlas0 #2041034_30: 704993209597499493
+      atlas0 #2041034_31: 5979402227020701020
+      atlas0 #2041034_32: 3752848667919245097
+      atlas0 #2041034_33: 4234792887205010519
+      atlas0 #2041034_34: -2432683800895559182
+      atlas0 #2041034_4: -8576530499818838330
+      atlas0 #2041034_5: 1505288402646273422
+      atlas0 #2041034_6: -6736707631536095587
+      atlas0 #2041034_7: -6293192117047039105
+      atlas0 #2041034_8: -1342809048341148627
+      atlas0 #2041034_9: -2143378580801075457
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
